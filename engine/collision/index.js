@@ -8,12 +8,15 @@ import p5, {
  * @param {Mover} mover 
  * @param {Vector} hit 
  */
-export function resolveBound(mover, hit) {
-  const normVelocity = Vector.dot(hit, mover.velocity);
+export function resolveBound(mover, {normal, penetration}) {
+  const normVelocity = Vector.dot(normal, mover.velocity);
   if (normVelocity > 0) return;
 
-  const impulse = Vector.mult(hit, -1.8 * normVelocity * mover.mass)
+  const impulse = Vector.mult(normal, -1.8 * normVelocity * mover.mass)
   mover.applyImpulse(impulse);
+
+  let correction = Vector.mult(normal, 0.5 * penetration);
+  mover.position.add(correction);
 }
 
 
@@ -44,19 +47,31 @@ export class Circle {
     min.add(pos);
 
     if (min.x < 0) {
-      resolver(new Vector(1, 0));
+      resolver({
+        normal: new Vector(1, 0), 
+        penetration: -min.x
+      });
     }
 
     if (min.y < 0) {
-      resolver(new Vector(0, 1));
+      resolver({
+        normal: new Vector(0, 1), 
+        penetration: -min.y
+      });
     }
 
     if (max.x > context.width) {
-      resolver(new Vector(-1, 0));
+      resolver({
+        normal: new Vector(-1, 0), 
+        penetration: max.x - context.width
+      });
     }
 
     if (max.y > context.height) {
-      resolver(new Vector(0, -1))
+      resolver({
+        normal: new Vector(0, -1), 
+        penetration: max.y - context.height
+      });
     }
   }
 }

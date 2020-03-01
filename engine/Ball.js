@@ -24,14 +24,14 @@ export default class Ball extends Mover {
      */
     tick(delta, st) {
         
-        //let mouse = this.mouseToWorld();
-        this.applyForce(new Vector(0, -250));
+        let mouse = this.mouseToWorld();
         
-        // if(this.velocity.mag() > 2)
-        // this.velocity.setMag(2)
+        let maxV = 1000;
+        if(this.velocity.mag() > maxV) this.velocity.setMag(maxV)
         
         super.tick(delta, st);
-        
+        this.applyForce(this.mouseToWorld().sub(this.position).mult(10));
+
         st.circle(this.position.x, st.height - this.position.y, this.radius * 2); 
     }
 }

@@ -58,7 +58,7 @@ export default class Mover
         this.position.add(Vector.mult(this.velocity, delta));
     }
     
-
+    
     /**
      * 
      * @param {number} delta 

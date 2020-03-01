@@ -1,4 +1,6 @@
-import { Vector } from 'p5'
+import p5, { Vector } from 'p5'
+import Mover from './Mover';
+
 
 export default class Pool
 {
@@ -8,6 +10,11 @@ export default class Pool
         this.delta = 0;
     }
 
+    /**
+     * 
+     * @param {Mover} mover 
+     * @param {Vector} position 
+     */
     spawnMover(mover, position) {
         mover.st = this.st;
         mover.position = position;
@@ -17,8 +24,14 @@ export default class Pool
         mover.begin();
     }
 
+    /**
+     * 
+     */
     begin() {}
 
+    /**
+     * 
+     */
     tick() {
         // const now = Date.now();
         // let delta = this.prev === undefined ? 0 : (now - this.prev) / 1000;

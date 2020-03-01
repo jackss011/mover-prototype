@@ -1,7 +1,13 @@
 import Mover from './Mover'
-import { Vector } from 'p5';
+import p5, { Vector } from 'p5';
+
 
 export default class Ball extends Mover {
+    /**
+     * 
+     * @param {Number} delta 
+     * @param {p5} st 
+     */
     tick(delta, st) {
         super.tick(delta, st);
 

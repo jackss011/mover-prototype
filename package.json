@@ -9,6 +9,7 @@
   "author": "Giacomo Agnetti",
   "license": "ISC",
   "dependencies": {
+    "@types/p5": "^0.9.0",
     "p5": "^0.10.2"
   },
   "devDependencies": {

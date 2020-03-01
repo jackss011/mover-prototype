@@ -1,0 +1,14 @@
+{
+  "name": "mover-prototype",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Giacomo Agnetti",
+  "license": "ISC",
+  "dependencies": {
+    "p5": "^0.10.2"
+  }
+}

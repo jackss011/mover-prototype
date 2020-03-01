@@ -1,4 +1,9 @@
 # Mover Protoptype
 ## Build
-Requires npm installed.
-Run `npm install` in the main folder.
+- Requires npm installed
+- Run `npm install`
+
+## Test
+- Run `npm start`
+- Connect to `localhost:1234`
+

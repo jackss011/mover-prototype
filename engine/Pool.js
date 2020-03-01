@@ -4,11 +4,18 @@ import Mover from './Mover';
 
 export default class Pool
 {
+    /**
+     * 
+     * @param {p5} st 
+     */
     constructor(st) {
         this.st = st;
-        this.movers = [];
         this.delta = 0;
+
+        /** @type {Array<Mover>} */
+        this.movers = [];
     }
+
 
     /**
      * 
@@ -24,20 +31,28 @@ export default class Pool
         mover.begin();
     }
 
+
     /**
      * 
      */
     begin() {}
 
+
+    /**
+     * 
+     */
+    updateDelta() {
+        this.delta = 1 / this.st.frameRate();
+        if(this.st.frameRate() === 0) this.delta = 0;
+    }
+    
+
     /**
      * 
      */
     tick() {
-        // const now = Date.now();
-        // let delta = this.prev === undefined ? 0 : (now - this.prev) / 1000;
-        // this.prev = now;
-        this.delta = 1 / this.st.frameRate();
-        if(this.st.frameRate() === 0) this.delta = 0;
+        this.updateDelta();
+        
 
         this.movers.forEach(m => {
             if(m.position.y < 15) {

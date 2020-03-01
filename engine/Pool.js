@@ -1,5 +1,6 @@
 import p5, { Vector } from 'p5'
 import Mover from './Mover';
+import { resolveBound } from './collision';
 
 
 export default class Pool
@@ -57,22 +58,15 @@ export default class Pool
     tick() {
         this.updateDelta();
         
+        this.movers.forEach(m => m.tick(this.delta, this.st))
 
         this.movers.forEach(m => {
-            if(m.position.y < 15) {
-                let coefficent = -(1 + 1);
-                let normal = new Vector(0, 1);
-                
-                let normVelocity = Vector.dot(normal, m.velocity);
-                if(normVelocity > 0) return;
+            if(!m.collision) return;
 
-                normal.mult(normVelocity * coefficent * m.mass)
-                m.applyImpulse(normal);
-            }
+            m.collision.checkOutOfBounds(this.st, hit => resolveBound(m, hit));
         })
         
-
-        this.movers.forEach(m => m.tick(this.delta, this.st))
+        this.movers.forEach(m => m.postTick(this.delta, this.st))
         
      
     }

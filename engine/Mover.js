@@ -1,5 +1,6 @@
 import p5, { Vector } from "p5";
 import Pool from './Pool';
+import { Circle } from "./collision";
 
 
 export default class Mover
@@ -9,12 +10,18 @@ export default class Mover
         this.velocity = new Vector();
         this.cumulatedForces = new Vector();
         this.cumulatedImpulse = new Vector();
+
+        /** @type {Circle} */
+        this.collision = null;
         
         /** @type {Pool} */
         this.pool = null;
 
         /** @type {number} */
         this.invMass = 1;
+
+        /** @type {p5} */
+        this.st = null;
     }
 
 
@@ -48,13 +55,19 @@ export default class Mover
     tick(delta, st) {
         this.velocity.add(this.cumulatedForces.mult(delta * this.invMass));
         this.cumulatedForces.set(0, 0);
-
-        this.velocity.add(this.cumulatedImpulse.mult(this.invMass));
-        this.cumulatedImpulse.set(0, 0);
-
-        this.position.add(this.velocity);
+        this.position.add(Vector.mult(this.velocity, delta));
     }
+    
 
+    /**
+     * 
+     * @param {number} delta 
+     * @param {p5} st 
+     */
+    postTick(delta, st) {
+        
+    }
+    
 
     /**
      * 
@@ -70,6 +83,41 @@ export default class Mover
      * @param {Vector} impulse 
      */
     applyImpulse(impulse) {
-        this.cumulatedImpulse.add(impulse);
+        this.velocity.add(Vector.mult(impulse, this.invMass));
+    }
+
+
+    /**
+     * 
+     * @param {number} x
+     * @param {number} y 
+     * @returns {Vector}
+     */
+    screenToWorld(x, y) {
+        if(!this.st) return new Vector(); 
+        
+        return new Vector(x, this.st.height - y);
+    }
+
+
+    // /**
+    //  * 
+    //  * @param {Vector} v
+    //  * @returns {Vector} 
+    //  */
+    // screenToWorld(v) {
+    //     if(!v) return new Vector();
+
+    //     return this.screenToWorld(v.x, v.y);
+    // }
+
+
+    /**
+     * @returns {Vector}
+     */
+    mouseToWorld() {
+        if(!this.st) return new Vector();
+
+        return new Vector(this.st.mouseX, this.st.height - this.st.mouseY);
     }
 }

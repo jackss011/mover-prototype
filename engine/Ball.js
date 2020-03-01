@@ -20,18 +20,18 @@ export default class Ball extends Mover {
     /**
      * 
      * @param {Number} delta 
-     * @param {p5} st 
+     * @param {p5} context 
      */
-    tick(delta, st) {
+    tick(delta, context) {
         
         let mouse = this.mouseToWorld();
         
         let maxV = 1000;
         if(this.velocity.mag() > maxV) this.velocity.setMag(maxV)
         
-        super.tick(delta, st);
+        super.tick(delta, context);
         this.applyForce(this.mouseToWorld().sub(this.position).mult(10));
 
-        st.circle(this.position.x, st.height - this.position.y, this.radius * 2); 
+        context.circle(this.position.x, context.height - this.position.y, this.radius * 2); 
     }
 }

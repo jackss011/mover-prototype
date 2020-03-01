@@ -7,10 +7,10 @@ export default class Pool
 {
     /**
      * 
-     * @param {p5} st 
+     * @param {p5} context 
      */
-    constructor(st) {
-        this.st = st;
+    constructor(context) {
+        this.context = context;
         this.delta = 0;
 
         /** @type {Array<Mover>} */
@@ -26,7 +26,7 @@ export default class Pool
      * @returns {Mover}
      */
     spawnMover(mover, position) {
-        mover.st = this.st;
+        mover.context = this.context;
         mover.position = position;
         mover.pool = this;
 
@@ -47,8 +47,8 @@ export default class Pool
      * 
      */
     updateDelta() {
-        this.delta = 1 / this.st.frameRate();
-        if(this.st.frameRate() === 0) this.delta = 0;
+        this.delta = 1 / this.context.frameRate();
+        if(this.context.frameRate() === 0) this.delta = 0;
     }
 
 
@@ -58,16 +58,14 @@ export default class Pool
     tick() {
         this.updateDelta();
         
-        this.movers.forEach(m => m.tick(this.delta, this.st))
+        this.movers.forEach(m => m.tick(this.delta, this.context))
 
         this.movers.forEach(m => {
             if(!m.collision) return;
 
-            m.collision.checkOutOfBounds(this.st, hit => resolveBound(m, hit));
+            m.collision.checkOutOfBounds(this.context, hit => resolveBound(m, hit));
         })
         
-        this.movers.forEach(m => m.postTick(this.delta, this.st))
-        
-     
+        this.movers.forEach(m => m.postTick(this.delta, this.context))
     }
 }

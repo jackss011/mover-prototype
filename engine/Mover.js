@@ -21,7 +21,7 @@ export default class Mover
         this.invMass = 1;
 
         /** @type {p5} */
-        this.st = null;
+        this.context = null;
     }
 
 
@@ -50,9 +50,9 @@ export default class Mover
     /**
      * 
      * @param {number} delta 
-     * @param {p5} st 
+     * @param {p5} context 
      */
-    tick(delta, st) {
+    tick(delta, context) {
         this.velocity.add(this.cumulatedForces.mult(delta * this.invMass));
         this.cumulatedForces.set(0, 0);
         this.position.add(Vector.mult(this.velocity, delta));
@@ -62,9 +62,9 @@ export default class Mover
     /**
      * 
      * @param {number} delta 
-     * @param {p5} st 
+     * @param {p5} context 
      */
-    postTick(delta, st) {
+    postTick(delta, context) {
         
     }
     
@@ -94,9 +94,9 @@ export default class Mover
      * @returns {Vector}
      */
     screenToWorld(x, y) {
-        if(!this.st) return new Vector(); 
+        if(!this.context) return new Vector(); 
         
-        return new Vector(x, this.st.height - y);
+        return new Vector(x, this.context.height - y);
     }
 
 
@@ -116,8 +116,8 @@ export default class Mover
      * @returns {Vector}
      */
     mouseToWorld() {
-        if(!this.st) return new Vector();
+        if(!this.context) return new Vector();
 
-        return new Vector(this.st.mouseX, this.st.height - this.st.mouseY);
+        return new Vector(this.context.mouseX, this.context.height - this.context.mouseY);
     }
 }

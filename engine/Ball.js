@@ -12,6 +12,6 @@ export default class Ball extends Mover {
         super.tick(delta, st);
 
         st.circle(this.position.x, st.height-this.position.y, 30);
-        this.applyForce(new Vector((200 - this.position.x)*0.01, -2));
+        this.applyForce(new Vector((200 - this.position.x)*0.01, -2).mult(this.mass));
     }
 }

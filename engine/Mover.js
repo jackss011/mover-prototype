@@ -46,10 +46,10 @@ export default class Mover
      * @param {p5} st 
      */
     tick(delta, st) {
-        this.velocity.add(this.cumulatedForces.mult(delta));
+        this.velocity.add(this.cumulatedForces.mult(delta * this.invMass));
         this.cumulatedForces.set(0, 0);
 
-        this.velocity.add(this.cumulatedImpulse);
+        this.velocity.add(this.cumulatedImpulse.mult(this.invMass));
         this.cumulatedImpulse.set(0, 0);
 
         this.position.add(this.velocity);

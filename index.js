@@ -5,6 +5,7 @@ import Ball from './engine/Ball'
 
 const P5 = new p5(st => {
     let pool = new Pool(st);
+    window.pool = pool;
 
     st.setup = () => {
         st.frameRate(144);

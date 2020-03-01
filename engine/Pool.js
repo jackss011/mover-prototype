@@ -21,6 +21,8 @@ export default class Pool
      * 
      * @param {Mover} mover 
      * @param {Vector} position 
+     * 
+     * @returns {Mover}
      */
     spawnMover(mover, position) {
         mover.st = this.st;
@@ -29,6 +31,8 @@ export default class Pool
 
         this.movers.push(mover);
         mover.begin();
+
+        return mover;
     }
 
 
@@ -45,7 +49,7 @@ export default class Pool
         this.delta = 1 / this.st.frameRate();
         if(this.st.frameRate() === 0) this.delta = 0;
     }
-    
+
 
     /**
      * 
@@ -56,12 +60,14 @@ export default class Pool
 
         this.movers.forEach(m => {
             if(m.position.y < 15) {
-                let sc = -(1 + 1);
-                let n = new Vector(0, 1);
-                let dot = Vector.dot(n, m.velocity);
-                if(dot > 0) return;
-                n.mult(dot * sc)
-                m.applyImpulse(n);
+                let coefficent = -(1 + 1);
+                let normal = new Vector(0, 1);
+                
+                let normVelocity = Vector.dot(normal, m.velocity);
+                if(normVelocity > 0) return;
+
+                normal.mult(normVelocity * coefficent * m.mass)
+                m.applyImpulse(normal);
             }
         })
         

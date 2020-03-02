@@ -28,13 +28,11 @@ export default class Ball extends Mover {
         super.tick(delta, context);
         
         let {x, y} = this.worldToScreen(this.position);
-
-        context.stroke(10, 10, 10, 255);
+        context.stroke(10, 10, 10);
         context.fill(255);
         context.circle(x, y, this.radius * 2); 
 
         const t = this.target ? this.target.position : this.mouseToWorld();
-
         const n = Vector.sub(t, this.position).mult(10);
         this.applyForce(n);  
     }

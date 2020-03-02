@@ -14,9 +14,8 @@ export default class Target extends Actor {
 
         let {x, y} = this.worldToScreen(this.position);
 
-        context.fill(0);
-        context.alpha(100);
-        context.stroke(0, 0, 0, 0);
+        context.fill(100);
+        context.noStroke();
         context.circle(x, y, 10);
     }
 }

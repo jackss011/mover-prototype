@@ -10,6 +10,8 @@ export default class Props extends Context
 
         /** @type {Pool} */
         this.pool = null;
+
+        this.destroyed = false;
     }
 
 
@@ -33,4 +35,7 @@ export default class Props extends Context
      * @param {p5} context 
      */
     postTick(delta, context) {}
+
+
+    onDestroy() {}
 }

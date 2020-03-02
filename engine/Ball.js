@@ -1,6 +1,7 @@
 import p5, { Vector } from 'p5';
 import Mover from './core/Mover'
 import {Circle} from './collision'
+import {Circle as Round} from './components/shapes'
 
 
 export default class Ball extends Mover {
@@ -16,6 +17,10 @@ export default class Ball extends Mover {
         this.collision.attachment = this;
 
         this.maxVelocity = 400;
+
+
+        this.shape = new Round(this.radius);
+        this.addComponent(this.shape);
     }
 
 
@@ -27,10 +32,10 @@ export default class Ball extends Mover {
     tick(delta, context) {
         super.tick(delta, context);
         
-        let {x, y} = this.worldToScreen(this.position);
-        context.stroke(10, 10, 10);
-        context.fill(255);
-        context.circle(x, y, this.radius * 2); 
+        // let {x, y} = this.worldToScreen(this.position);
+        // context.stroke(10, 10, 10);
+        // context.fill(255);
+        // context.circle(x, y, this.radius * 2); 
 
         if(this.target && this.target.enabled) 
         {

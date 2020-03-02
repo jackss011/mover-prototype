@@ -5,7 +5,16 @@ export default class Context
 {
     constructor() {
         /** @type {p5} */
-        this.context = null;
+        this._context = null;
+    }
+
+    get context() {
+        return this._context;
+    }
+
+
+    set context(value) {
+        this._context = value;
     }
 
 

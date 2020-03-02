@@ -3,7 +3,7 @@ import Pool from './engine/core/Pool'
 import Ball from './engine/Ball'
 import Target from './engine/Target'
 
-import {StopwatchLog} from './engine/time/Stopwatch' 
+import {StopwatchLog} from './engine/time/stopwatchs' 
 import {Timer} from './engine/time/timers'
 
 

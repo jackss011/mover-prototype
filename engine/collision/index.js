@@ -1,6 +1,4 @@
-import p5, {
-  Vector
-} from "p5";
+import p5, { Vector } from "p5";
 
 
 /**
@@ -21,16 +19,33 @@ export function resolveBound(mover, {normal, penetration}) {
 
 
 
-export class Circle {
+export class Collision {
+  constructor() {
+    /** @type {string} */
+    this.type = null;
+    this.attachment = null;
+  }
+
+  get position() {
+    if(this.attachment) 
+      return this.attachment.position;
+
+    return new Vector();
+  }
+}
+
+
+
+export class Circle extends Collision {
   /**
    * 
    * @param {number} radius 
    */
   constructor(radius) {
+    super();
+
     this.type = 'circle';
     this.radius = radius;
-    this.position = new Vector();
-    this.attachment = null;
   }
 
 
@@ -39,12 +54,10 @@ export class Circle {
    * @param {(Vector) => void} resolver 
    */
   checkOutOfBounds(context, resolver) {
-    const pos = this.attachment ? this.attachment.position : this.position;
-
     let max = new Vector(this.radius, this.radius);
     let min = new Vector(-this.radius, -this.radius);
-    max.add(pos);
-    min.add(pos);
+    max.add(this.position);
+    min.add(this.position);
 
     if (min.x < 0) {
       resolver({
@@ -73,5 +86,19 @@ export class Circle {
         penetration: max.y - context.height
       });
     }
+  }
+
+
+  /**
+   * 
+   * @param {Vector} point 
+   */
+  pointHit(point) {
+    const diff = Vector.sub(point, this.position);
+
+    if(diff.magSq() < this.radius * this.radius)
+      return { relative: diff }
+
+    return false;
   }
 }

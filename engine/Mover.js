@@ -1,6 +1,6 @@
 import p5, { Vector } from "p5";
 import Pool from './Pool';
-import { Circle } from "./collision";
+import { Collision } from "./collision";
 
 
 export default class Mover
@@ -11,7 +11,7 @@ export default class Mover
         this.cumulatedForces = new Vector();
         this.cumulatedImpulse = new Vector();
 
-        /** @type {Circle} */
+        /** @type {Collision} */
         this.collision = null;
         
         /** @type {Pool} */

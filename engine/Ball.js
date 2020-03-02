@@ -14,6 +14,8 @@ export default class Ball extends Mover {
         this.radius = radius;
         this.collision = new Circle(this.radius);
         this.collision.attachment = this;
+
+        this.maxVelocity = 400;
     }
 
 
@@ -23,15 +25,11 @@ export default class Ball extends Mover {
      * @param {p5} context 
      */
     tick(delta, context) {
-        
-        let mouse = this.mouseToWorld();
-        
-        let maxV = 1000;
-        if(this.velocity.mag() > maxV) this.velocity.setMag(maxV)
-        
         super.tick(delta, context);
-        this.applyForce(this.mouseToWorld().sub(this.position).mult(10));
-
+        
         context.circle(this.position.x, context.height - this.position.y, this.radius * 2); 
+
+        const n = this.mouseToWorld().sub(this.position).mult(10);
+        this.applyForce(n);    
     }
 }

@@ -17,11 +17,12 @@ export default class Mover
         /** @type {Pool} */
         this.pool = null;
 
-        /** @type {number} */
-        this.invMass = 1;
-
         /** @type {p5} */
         this.context = null;
+        
+        this.invMass = 1;
+        this.linearDamping = 0;
+        this.maxVelocity = 200;
     }
 
 
@@ -53,8 +54,24 @@ export default class Mover
      * @param {p5} context 
      */
     tick(delta, context) {
-        this.velocity.add(this.cumulatedForces.mult(delta * this.invMass));
+        const dv = this.cumulatedForces.mult(delta * this.invMass);
+        this.velocity.add(dv);
+
+        if(this.linearDamping > 0) {
+            const dvD = Math.sqrt(this.velocity.mag()) * this.linearDamping * delta * this.invMass;
+
+            if(this.velocity.mag() < 0.1 && dvD > dv.mag())
+                this.velocity.set(0, 0);
+            else
+                this.velocity.mult(1 - dvD);
+        }
+        
         this.cumulatedForces.set(0, 0);
+
+        const mag = this.velocity.magSq();
+        if(mag > this.maxVelocity * this.maxVelocity) 
+            this.velocity.setMag(this.maxVelocity);
+
         this.position.add(Vector.mult(this.velocity, delta));
     }
     

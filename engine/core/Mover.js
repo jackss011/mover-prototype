@@ -1,6 +1,6 @@
 import p5, { Vector } from "p5";
 import Pool from './Pool';
-import { Collision } from "./collision";
+import { Collision } from "../collision";
 import Actor from "./Actor";
 
 
@@ -15,7 +15,7 @@ export default class Mover extends Actor
         
         this.invMass = 1;
         this.linearDamping = 0;
-        this.maxVelocity = 200;
+        this.maxVelocity = 2000;
     }
 
 

@@ -1,6 +1,6 @@
 import p5, { Vector } from "p5";
 import Pool from './Pool';
-import { Collision } from "./collision";
+import { Collision } from "../collision";
 import Props from "./Prop";
 
 

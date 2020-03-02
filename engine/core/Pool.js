@@ -1,7 +1,7 @@
 import p5, { Vector } from 'p5'
 import Mover from './Mover';
 import Actor from './Actor';
-import { resolveBound } from './collision';
+import { resolveBound } from '../collision';
 
 
 export default class Pool

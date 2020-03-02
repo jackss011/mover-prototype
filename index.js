@@ -1,5 +1,5 @@
 import p5, { Vector } from 'p5'
-import Pool from './engine/Pool'
+import Pool from './engine/core/Pool'
 import Ball from './engine/Ball'
 
 

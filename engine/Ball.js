@@ -1,5 +1,5 @@
 import p5, { Vector } from 'p5';
-import Mover from './Mover'
+import Mover from './core/Mover'
 import {Circle} from './collision'
 
 

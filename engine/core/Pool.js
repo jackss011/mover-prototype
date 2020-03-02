@@ -1,7 +1,8 @@
 import p5, { Vector } from 'p5'
-import Mover from './Mover';
+
 import Actor from './Actor';
 import { resolveBound } from '../collision';
+import { Timer } from '../time/timers';
 
 
 export default class Pool
@@ -16,6 +17,9 @@ export default class Pool
 
         /** @type {Array<Actor>} */
         this.actors = [];
+
+        /** @type {Array<Timer>} */
+        this.timers = [];
     }
 
 
@@ -40,6 +44,15 @@ export default class Pool
 
     /**
      * 
+     * @param {Timer} timer 
+     */
+    addTimer(timer) {
+        this.timers.push(timer);
+    }
+
+
+    /**
+     * 
      */
     begin() {}
 
@@ -59,6 +72,7 @@ export default class Pool
     tick() {
         this.updateDelta();
         
+        this.timers.forEach(t => t.tick(this.delta));
         this.actors.forEach(a => a.tick(this.delta, this.context))
 
         this.actors.forEach(a => {

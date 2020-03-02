@@ -4,6 +4,7 @@ import Ball from './engine/Ball'
 import Target from './engine/Target'
 
 import {StopwatchLog} from './engine/time/Stopwatch' 
+import {Timer} from './engine/time/timers'
 
 
 const canvas = new p5(st => {
@@ -13,7 +14,7 @@ const canvas = new p5(st => {
     const swTick = new StopwatchLog('tick', 100);
     swTick.logEnabled = false;
 
-    
+
     st.setup = () => {
         st.frameRate(144);
         st.createCanvas(400, 400);
@@ -28,11 +29,8 @@ const canvas = new p5(st => {
 
     st.draw = () => {
         st.background(220);
-
         swTick.start();
-
         pool.tick();
-
         swTick.reset();
     }
 })

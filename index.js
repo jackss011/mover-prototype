@@ -1,6 +1,7 @@
 import p5, { Vector } from 'p5'
 import Pool from './engine/core/Pool'
 import Ball from './engine/Ball'
+import Target from './engine/Target'
 
 
 const P5 = new p5(st => {
@@ -11,7 +12,10 @@ const P5 = new p5(st => {
         st.frameRate(144);
         st.createCanvas(400, 400);
         pool.begin();
-        pool.spawnActor(new Ball(15), new Vector(100, 100));
+        const follower = pool.spawnActor(new Ball(15), new Vector(100, 100));
+        const target = pool.spawnActor(new Target(), new Vector(200, 200));
+
+        follower.target = target;
     }
 
     //console.log(s)

@@ -19,6 +19,29 @@ export default class Context
     }
 
 
+    /**
+     * 
+     * @param {number | Vector} x
+     * @param {number} y 
+     * @returns {Vector}
+     */
+    screenToWorld(x, y) {
+        if(!this.context) return new Vector(); 
+
+        if(!y) {
+            y = x.y;
+            x = x.x;
+        }
+        
+        return new Vector(x, this.context.height - y);
+    }
+
+
+    /**
+     * 
+     * @param {number | Vector} x 
+     * @param {number} y 
+     */
     worldToScreen(x, y) {
         return this.screenToWorld(x, y);
     }

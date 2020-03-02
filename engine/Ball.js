@@ -28,27 +28,14 @@ export default class Ball extends Mover {
         super.tick(delta, context);
         
         let {x, y} = this.worldToScreen(this.position);
+
+        context.stroke(10, 10, 10, 255);
+        context.fill(255);
         context.circle(x, y, this.radius * 2); 
 
-        const n = this.mouseToWorld().sub(this.position).mult(10);
-        this.applyForce(n);    
-    }
+        const t = this.target ? this.target.position : this.mouseToWorld();
 
-
-    /**
-     * 
-     * @param {number} x
-     * @param {number} y 
-     * @returns {Vector}
-     */
-    screenToWorld(x, y) {
-        if(!this.context) return new Vector(); 
-
-        if(!y) {
-            y = x.y;
-            x = x.x;
-        }
-        
-        return new Vector(x, this.context.height - y);
+        const n = Vector.sub(t, this.position).mult(10);
+        this.applyForce(n);  
     }
 }

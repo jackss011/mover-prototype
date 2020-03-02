@@ -32,8 +32,10 @@ export default class Ball extends Mover {
         context.fill(255);
         context.circle(x, y, this.radius * 2); 
 
-        const t = this.target ? this.target.position : this.mouseToWorld();
-        const n = Vector.sub(t, this.position).mult(10);
-        this.applyForce(n);  
+        if(this.target && this.target.enabled) 
+        {
+            const n = Vector.sub(this.target.position, this.position).mult(10);
+            this.applyForce(n);
+        }          
     }
 }

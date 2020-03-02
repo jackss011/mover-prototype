@@ -9,13 +9,15 @@ export default class Target extends Actor {
      * @param {p5} context 
      */
     tick(delta, context) {
-        if(context.mouseIsPressed)
-            this.position = this.mouseToWorld();
+        this.enabled = context.mouseIsPressed
+
+        this.position = this.mouseToWorld();
 
         let {x, y} = this.worldToScreen(this.position);
 
-        context.fill(100);
+        context.fill(this.enabled ? 100 : 175);
         context.noStroke();
         context.circle(x, y, 10);
+        
     }
 }

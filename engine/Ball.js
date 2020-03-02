@@ -18,9 +18,7 @@ export default class Ball extends Mover {
 
         this.maxVelocity = 400;
 
-
-        this.shape = new Round(this.radius);
-        this.addComponent(this.shape);
+        this.shape = this.addComponent(new Round(this.radius));
     }
 
 
@@ -31,11 +29,6 @@ export default class Ball extends Mover {
      */
     tick(delta, context) {
         super.tick(delta, context);
-        
-        // let {x, y} = this.worldToScreen(this.position);
-        // context.stroke(10, 10, 10);
-        // context.fill(255);
-        // context.circle(x, y, this.radius * 2); 
 
         if(this.target && this.target.enabled) 
         {

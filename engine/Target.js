@@ -1,8 +1,17 @@
 import Actor from "./core/Actor";
 import p5, { Vector } from "p5";
+import { Circle } from "./components/shapes";
 
 
 export default class Target extends Actor {
+
+    constructor() {
+        super();
+
+        this.shape = this.addComponent(new Circle(5));
+    }
+
+
     /**
      * 
      * @param {number} delta 
@@ -12,12 +21,5 @@ export default class Target extends Actor {
         this.enabled = context.mouseIsPressed
 
         this.position = this.mouseToWorld();
-
-        let {x, y} = this.worldToScreen(this.position);
-
-        context.fill(this.enabled ? 100 : 175);
-        context.noStroke();
-        context.circle(x, y, 10);
-        
     }
 }

@@ -30,6 +30,8 @@ export default class Actor extends Props
         this.components.push(component);
         component.actor = this;
         component.init();
+
+        return component;
     }
 
 
@@ -60,7 +62,7 @@ export default class Actor extends Props
      */
     onDestroy() {
         super.onDestroy();
-        
+
         this.components.forEach(c => c.onDestroy());
     }
 }

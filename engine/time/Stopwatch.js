@@ -3,7 +3,7 @@ import {DoEvery} from '../utils/flow'
 
 
 
-export default class Stopwatch {
+export class Stopwatch {
   constructor() {
     /** @returns {number} */
     this.cumulatedTime = 0;
@@ -74,13 +74,16 @@ export default class Stopwatch {
 
 
 export class StopwatchLog extends Stopwatch {
-  constructor(name, N = 1) {
+  constructor(name, N = 1, useAvg = false) {
     super();
 
+    const R = useAvg ? .2 : 1;
+
     this.name = name;
-    this.resetAvg = new ExpAvg(0.2);
-    this.lapAvg = new ExpAvg(0.2);
+    this.resetAvg = new ExpAvg(R);
+    this.lapAvg = new ExpAvg(R);
     this.logStepper = new DoEvery(N);
+    this.logEnabled = true;
   }
 
   /**
@@ -89,7 +92,8 @@ export class StopwatchLog extends Stopwatch {
    * @param {number} value 
    */
   logValue(action, value) {
-    console.log(`sw:${this.name}>${action} ${value.toFixed(2)}ms`)
+    if(this.logEnabled)
+      console.log(`sw:${this.name}>${action} ${value.toFixed(2)}ms`)
   }
 
   reset() {

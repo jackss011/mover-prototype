@@ -1,5 +1,6 @@
 import p5, { Vector } from 'p5'
 import Mover from './Mover';
+import Actor from './Actor';
 import { resolveBound } from './collision';
 
 
@@ -13,27 +14,27 @@ export default class Pool
         this.context = context;
         this.delta = 0;
 
-        /** @type {Array<Mover>} */
-        this.movers = [];
+        /** @type {Array<Actor>} */
+        this.actors = [];
     }
 
 
     /**
      * 
-     * @param {Mover} mover 
+     * @param {Actor} actor 
      * @param {Vector} position 
      * 
-     * @returns {Mover}
+     * @returns {Actor}
      */
-    spawnMover(mover, position) {
-        mover.context = this.context;
-        mover.position = position;
-        mover.pool = this;
+    spawnActor(actor, position) {
+        actor.context = this.context;
+        actor.position = position;
+        actor.pool = this;
 
-        this.movers.push(mover);
-        mover.begin();
+        this.actors.push(actor);
+        actor.begin();
 
-        return mover;
+        return actor;
     }
 
 
@@ -58,14 +59,14 @@ export default class Pool
     tick() {
         this.updateDelta();
         
-        this.movers.forEach(m => m.tick(this.delta, this.context))
+        this.actors.forEach(a => a.tick(this.delta, this.context))
 
-        this.movers.forEach(m => {
-            if(!m.collision) return;
+        this.actors.forEach(a => {
+            if(!a.collision) return;
 
-            m.collision.checkOutOfBounds(this.context, hit => resolveBound(m, hit));
+            a.collision.checkOutOfBounds(this.context, hit => resolveBound(a, hit));
         })
         
-        this.movers.forEach(m => m.postTick(this.delta, this.context))
+        this.actors.forEach(a => a.postTick(this.delta, this.context))
     }
 }

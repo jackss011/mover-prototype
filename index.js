@@ -11,7 +11,7 @@ const P5 = new p5(st => {
         st.frameRate(144);
         st.createCanvas(400, 400);
         pool.begin();
-        pool.spawnMover(new Ball(15), new Vector(100, 100));
+        pool.spawnActor(new Ball(15), new Vector(100, 100));
     }
 
     //console.log(s)

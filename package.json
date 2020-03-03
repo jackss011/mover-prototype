@@ -15,5 +15,8 @@
   },
   "devDependencies": {
     "parcel": "^1.12.4"
+  },
+  "alias": {
+    "#": "/engine"
   }
 }

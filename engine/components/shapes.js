@@ -1,5 +1,5 @@
 import p5 from 'p5'
-import Component from '../core/Component';
+import Component from '#/core/Component';
 
 import color from 'chroma-js'
 

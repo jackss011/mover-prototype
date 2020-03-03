@@ -1,11 +1,15 @@
 import p5 from 'p5'
 import Component from '../core/Component';
 
+import color from 'chroma-js'
 
 
 export class Shape extends Component {
     constructor() {
         super();
+
+        this.fill = color('white');
+        this.stroke = color('black');
     }
 
 
@@ -42,8 +46,8 @@ export class Circle extends Shape {
      */
     render(context) {
         let {x, y} = this.worldToScreen(this.actor.position);
-        context.stroke(10, 10, 10);
-        context.fill(255);
+        context.stroke(...this.p5color(this.stroke));
+        context.fill(...this.p5color(this.fill));
         context.circle(x, y, this.radius * 2); 
     }
 }

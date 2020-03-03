@@ -1,4 +1,5 @@
 import p5, { Vector } from "p5";
+import color from 'chroma-js'
 
 
 export default class Context
@@ -53,5 +54,15 @@ export default class Context
      */
     worldToScreen(x, y) {
         return this.screenToWorld(x, y);
+    }
+
+
+    /**
+     * @param {color.Color} c
+     */
+    p5color(c) {
+        let rgb = c.rgba();
+        rgb[3] *= 255;
+        return rgb;
     }
 }

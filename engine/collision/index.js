@@ -23,14 +23,37 @@ export class Collision {
   constructor() {
     /** @type {string} */
     this.type = null;
+
+    /** @type {Actor} */
     this.attachment = null;
+
+    this.mouseTrace = false;
   }
 
+  
   get position() {
     if(this.attachment) 
       return this.attachment.position;
 
     return new Vector();
+  }
+
+
+  /**
+   * @param {p5} context 
+   * @param {(hit: {normal:Vector, penetration:number}) => void} resolver 
+   */
+  checkOutOfBounds(context, resolver) {
+    return false;
+  }
+
+
+  /**
+   * 
+   * @param {Vector} point 
+   */
+  pointHit(point) {
+    return false;
   }
 }
 
@@ -51,7 +74,7 @@ export class Circle extends Collision {
 
   /**
    * @param {p5} context 
-   * @param {(Vector) => void} resolver 
+   * @param {(hit: {normal:Vector, penetration:number}) => void} resolver 
    */
   checkOutOfBounds(context, resolver) {
     let max = new Vector(this.radius, this.radius);

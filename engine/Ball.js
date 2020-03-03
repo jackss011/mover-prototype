@@ -1,5 +1,6 @@
 import p5, { Vector } from 'p5';
 import color from 'chroma-js'
+
 import Mover from './core/Mover'
 import {Circle} from './collision'
 import {Circle as Round} from './components/shapes'
@@ -15,10 +16,12 @@ export default class Ball extends Mover {
         super();
 
         this.radius = radius;
+
         this.collision = new Circle(this.radius);
         this.collision.attachment = this;
+        this.collision.mouseTrace = true;
 
-        this.maxVelocity = 400;
+        this.maxVelocity = 700;
 
         /** @type {Round} */
         this.shape = this.addComponent(new Round(this.radius));

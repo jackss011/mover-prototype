@@ -1,17 +1,20 @@
 import p5, { Vector } from 'p5'
 
+import Context from './Context';
 import Actor from './Actor';
 import { resolveBound } from '../collision';
 import { Timer } from '../time/timers';
 
 
-export default class Pool
+export default class Pool extends Context
 {
     /**
      * 
      * @param {p5} context 
      */
     constructor(context) {
+        super();
+
         this.context = context;
         this.delta = 0;
 
@@ -20,6 +23,11 @@ export default class Pool
 
         /** @type {Array<Timer>} */
         this.timers = [];
+
+
+        context.mouseClicked = () => {
+           this.mouseClick = this.mouseToWorld(context.mouseX, context.mouseY);
+        }
     }
 
 
@@ -79,7 +87,14 @@ export default class Pool
             if(!a.collision) return;
 
             a.collision.checkOutOfBounds(this.context, hit => resolveBound(a, hit));
+
+            if(a.collision.mouseTrace && this.mouseClick) {
+                const res = a.collision.pointHit(this.mouseClick);
+                if(res) console.log(res);
+            }
         })
+
+        this.mouseClick = null;
         
         this.actors.forEach(a => a.postTick(this.delta, this.context))
     }

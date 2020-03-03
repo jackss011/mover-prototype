@@ -7,7 +7,7 @@ import {StopwatchLog} from './engine/time/stopwatchs'
 import {Timer} from './engine/time/timers'
 
 
-const canvas = new p5(st => {
+const canvas = new p5(/**@param {p5} st */st => {
     const pool = new Pool(st);
     window.pool = pool;
 
@@ -17,7 +17,7 @@ const canvas = new p5(st => {
 
     st.setup = () => {
         st.frameRate(144);
-        st.createCanvas(400, 400);
+        st.createCanvas(600, 400);
         pool.begin();
         
         const follower = pool.spawnActor(new Ball(15), new Vector(100, 100));

@@ -1,7 +1,7 @@
 import p5, { Vector } from "p5";
 import color from 'chroma-js'
-import Actor from "./core/Actor";
-import { Circle } from "./components/shapes";
+import Actor from "#/core/Actor";
+import { Circle } from "#/components/shapes";
 
 
 export default class Target extends Actor {

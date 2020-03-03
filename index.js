@@ -1,7 +1,8 @@
 import p5, { Vector } from 'p5'
+
 import * as Engine from './engine'
-import Ball from './engine/Ball'
-import Target from './engine/Target'
+import Ball from './engine/examples/Ball'
+import Target from './engine/examples/Target'
 
 
 class TestController extends Engine.Controller {

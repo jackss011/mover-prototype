@@ -136,6 +136,7 @@ export default class Pool extends Context
         
 
         this.collisionManager.resolveCollisionBounds();
+        this.collisionManager.resolveCollisions();
         
         this.actors.forEach(a => a.postTick(this.delta, this.context))
     }

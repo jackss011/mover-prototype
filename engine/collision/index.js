@@ -1,6 +1,17 @@
 import p5, { Vector } from "p5";
 
 
+export const CollisionType = Object.freeze({
+  CIRCLE: 'CIRCLE',
+});
+
+
+export const CollisionResponse = Object.freeze({
+  IGNORE: 'IGNORE',
+  BOUNCE: 'BOUNCE',
+});
+
+
 
 export const TraceMode = Object.freeze({
   IGNORE: 'IGNORE',
@@ -18,6 +29,8 @@ export class Collision {
     this.attachment = null;
 
     this.traceResponse = {default: TraceMode.IGNORE};
+
+    this.restitution = 0.4;
   }
 
   get TraceMode() {
@@ -61,7 +74,7 @@ export class Circle extends Collision {
   constructor(radius) {
     super();
 
-    this.type = 'circle';
+    this.type = CollisionType.CIRCLE;
     this.radius = radius;
   }
 

@@ -4,6 +4,7 @@ import color from 'chroma-js'
 import Mover from '#/core/Mover'
 import {Circle} from '#/collision'
 import {Circle as Round} from '#/components/shapes'
+import { TraceMode, Collision } from '../collision';
 
 
 
@@ -17,9 +18,10 @@ export default class Ball extends Mover {
 
         this.radius = radius;
 
+        /** @type {Collision} */
         this.collision = new Circle(this.radius);
         this.collision.attachment = this;
-        this.collision.mouseTrace = true;
+        this.collision.traceResponse.mouse = TraceMode.PASS;
 
         this.maxVelocity = 700;
 

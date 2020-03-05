@@ -3,9 +3,9 @@ import p5, { Vector } from "p5";
 
 
 export const TraceMode = Object.freeze({
-  IGNORE: 0,
-  PASS: 1,
-  BLOCK: 2,
+  IGNORE: 'IGNORE',
+  PASS: 'PASS',
+  BLOCK: 'BLOCK',
 });
 
 

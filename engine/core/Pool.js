@@ -128,7 +128,7 @@ export default class Pool extends Context
 
 
         if(this.mouseClick) {
-            const res = this.collisionManager.verticalTrace(this.mouseClick);
+            const res = this.collisionManager.verticalTrace(this.mouseClick, 'mouse');
             if(res) console.log(res);
         }
 

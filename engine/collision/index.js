@@ -1,21 +1,6 @@
 import p5, { Vector } from "p5";
 
 
-/**
- * 
- * @param {Mover} mover 
- * @param {Vector} hit 
- */
-export function resolveBound(mover, {normal, penetration}) {
-  const normVelocity = Vector.dot(normal, mover.velocity);
-  if (normVelocity > 0) return;
-
-  const impulse = Vector.mult(normal, -1.8 * normVelocity * mover.mass)
-  mover.applyImpulse(impulse);
-
-  let correction = Vector.mult(normal, 0.5 * penetration);
-  mover.position.add(correction);
-}
 
 
 

@@ -4,8 +4,8 @@ import Context from './Context';
 import {Controller} from '..'
 import Actor from './Actor';
 import Prop from './Prop'
-import { resolveBound } from '../collision';
 import { Timer } from '../time/timers';
+import CollisionManager from '../collision/CollisionManager';
 
 
 export default class Pool extends Context
@@ -29,6 +29,8 @@ export default class Pool extends Context
         
         /** @type {Controller} */
         this.spawnController(controller || new Controller());
+
+        this.collisionManager = new CollisionManager(this);
 
 
         context.mouseClicked = () => {
@@ -113,23 +115,25 @@ export default class Pool extends Context
     tick() {
         this.updateDelta();
 
+        // controller tick
         this.controller.tick(this.delta, this.context);
         
+        // timer tick
         this.timers.forEach(t => t.tick(this.delta));
-        this.actors.forEach(a => a.tick(this.delta, this.context))
 
-        this.actors.forEach(a => {
-            if(!a.collision) return;
+        // actors tick
+        this.actors.forEach(a => a.tick(this.delta, this.context));
 
-            a.collision.checkOutOfBounds(this.context, hit => resolveBound(a, hit));
 
-            if(a.collision.mouseTrace && this.mouseClick) {
-                const res = a.collision.pointHit(this.mouseClick);
-                if(res) console.log(res);
-            }
-        })
+        if(this.mouseClick) {
+            const res = this.collisionManager.verticalTrace(this.mouseClick);
+            if(res) console.log(res);
+        }
 
         this.mouseClick = null;
+        
+
+        this.collisionManager.resolveCollisionBounds();
         
         this.actors.forEach(a => a.postTick(this.delta, this.context))
     }

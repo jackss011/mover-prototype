@@ -16,6 +16,12 @@ export class Stopwatch {
   }
 
 
+
+  get now() {
+    return performance.now();
+  }
+
+
   /**
    * @returns {number}
    */
@@ -29,7 +35,7 @@ export class Stopwatch {
    */
   start() {
     if(!this.isRunning)
-      this.startTime = Date.now();
+      this.startTime = this.now;
   }
 
 
@@ -39,7 +45,7 @@ export class Stopwatch {
   stop() {
     if(!this.isRunning) return this.cumulatedTime;
 
-    const eleapsed = Date.now() - this.startTime;
+    const eleapsed = this.now - this.startTime;
     this.cumulatedTime += eleapsed;
     this.startTime = null;
     return this.cumulatedTime;
@@ -60,7 +66,7 @@ export class Stopwatch {
    * @returns {number}
    */
   lap() {
-    const now = Date.now();
+    const now = this.now;
     const eleapsed = now - (this.lastLap || this.startTime || now);
 
     if(this.isRunning)
@@ -105,4 +111,11 @@ export class StopwatchLog extends Stopwatch {
     const res = this.lapAvg.calculate(super.lap());
     this.logStepper.do(() => this.logValue('lap', res));
   }
+}
+
+
+
+
+export class Benchmark {
+
 }

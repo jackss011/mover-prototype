@@ -11,8 +11,8 @@ export default class Target extends Actor {
 
         /** @type {Circle} */
         this.shape = this.addComponent(new Circle(5));
-        this.shape.stroke = color(0).alpha(0);
-        this.shape.fill = color('#aaa');
+        this.shape.stroke = color('#888');
+        this.shape.fill = color(0).alpha(0);
     }
 
 

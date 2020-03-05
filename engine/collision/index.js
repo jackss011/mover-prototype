@@ -2,6 +2,11 @@ import p5, { Vector } from "p5";
 
 
 
+export const TraceMode = Object.freeze({
+  IGNORE: 0,
+  PASS: 1,
+  BLOCK: 2,
+});
 
 
 export class Collision {
@@ -12,7 +17,11 @@ export class Collision {
     /** @type {Actor} */
     this.attachment = null;
 
-    this.mouseTrace = false;
+    this.traceResponse = {default: TraceMode.IGNORE};
+  }
+
+  get TraceMode() {
+    return TraceMode;
   }
 
   

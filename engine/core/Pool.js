@@ -94,6 +94,8 @@ export default class Pool extends Context
      * 
      */
     begin() {
+        this.context.canvas.style.cursor = "none";
+
         this.controller.begin();
 
         this.actors.forEach(a => a.begin());

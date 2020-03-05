@@ -9,9 +9,9 @@ class TestController extends Engine.Controller {
     begin() {
         super.begin();
         
+        const follower = this.pool.spawnActor(new Ball(15), new Vector(100, 100));
         const target = this.pool.spawnActor(new Target(), new Vector(200, 200));
         
-        const follower = this.pool.spawnActor(new Ball(15), new Vector(100, 100));
         follower.target = target;
     }
 }

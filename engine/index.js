@@ -20,7 +20,6 @@ export class Controller extends Prop {
 export function createCanvas(x, y, controller) {
     const canvas = new p5(/** @param {p5} context*/ context => {
         const pool = new Pool(context, controller);
-        window.pool = pool;
 
         const sw = new StopwatchLog('tick', 100);
         sw.logEnabled = false;

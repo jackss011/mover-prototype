@@ -53,7 +53,7 @@ export default class CollisionManager
    */
   verticalTrace(point, traceChannel = null) {
     const res = [];
-    const done = false;
+    let done = false;
 
     this.pool.actors.forEach(a => {
       if(!a.collision || done) return;

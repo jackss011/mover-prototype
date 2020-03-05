@@ -11,7 +11,7 @@ export default class Target extends Actor {
 
         /** @type {Circle} */
         this.shape = this.addComponent(new Circle(5));
-        this.shape.stroke = color('#888');
+        //this.shape.stroke = color('#888');
         this.shape.fill = color(0).alpha(0);
     }
 
@@ -22,7 +22,8 @@ export default class Target extends Actor {
      * @param {p5} context 
      */
     tick(delta, context) {
-        this.enabled = context.mouseIsPressed
+        this.enabled = context.mouseIsPressed;
+        this.shape.stroke = this.enabled ? color('teal') : color('#888');
 
         this.position = this.mouseToWorld();
     }

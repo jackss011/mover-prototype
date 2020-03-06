@@ -69,13 +69,13 @@ export default class CollisionManager
 
     const impulse = Vector.mult(normal, -(1 + e) * normVelocity / (a.invMass + b.invMass));
 
-    const before = (a.velocity.magSq() + b.velocity.magSq()).toFixed(0)
+    //const before = (a.velocity.magSq() + b.velocity.magSq()).toFixed(0)
     
     a.applyImpulse(Vector.mult(impulse, -a.invMass));
     b.applyImpulse(Vector.mult(impulse, b.invMass));
 
-    const after = (a.velocity.magSq() + b.velocity.magSq()).toFixed(0)
-    console.log({delta: after - before });
+    //const after = (a.velocity.magSq() + b.velocity.magSq()).toFixed(0)
+    //console.log({delta: after - before });
 
     const p = penetration > 3 ? 0.8 : 0.3;
     
@@ -83,7 +83,7 @@ export default class CollisionManager
     a.position.add(Vector.mult(correction, -a.invMass));
     b.position.add(Vector.mult(correction, b.invMass));
 
-    console.log(correction);
+    //console.log(correction);
     
   }
 
@@ -103,21 +103,38 @@ export default class CollisionManager
   resolveCollisions() {
     const array = this.pool.actors.filter(a => a instanceof Mover);
     
-    for(let i = 0; i < array.length - 1; i++) {
-      for(let j = i + 1; j < array.length; j++) {
-        const a = array[i];
-        const b = array[j];
-        //console.log({a, b});
-        
-        const hit = circleVScircle(a, b);
+    pairs(array, (a, b) => {
+      const hit = this.staticCollision(a.collision, b.collision);
+      const response = this.getCollisionResponse(a, b);
+    
+      switch(response) {
+        case CollisionResponse.BOUNCE: {
+          if(hit) this.resolver(a, b, hit);
+          break;
+        }
 
-        if(hit) {
-          this.resolver(a, b, hit);
+        case CollisionResponse.OVERLAP: {
+          if(hit) {
+
+          }
+          else {
+
+          }
+          break;
         }
       }
-    }
+    });
   }
 
+
+  /**
+   * 
+   * @param {Collision} a 
+   * @param {Collision} b 
+   */
+  staticCollision(a, b) {
+    return circleVScircle(a, b);
+  }
 
   /**
    * 
@@ -170,4 +187,17 @@ function circleVScircle(a, b) {
   const penetration = r - d;
 
   return {normal, penetration};
+}
+
+
+
+/**
+ * 
+ * @param {Array<T>} array 
+ * @param {(a: T, b: T) => void} action
+ */
+function pairs(array, action) {
+  for(let i = 0; i < array.length - 1; i++)
+    for(let j = i + 1; j < array.length; j++)
+      action(array[i], array[j]);
 }

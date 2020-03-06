@@ -27,7 +27,7 @@ export default class CollisionManager
    */
   getCollisionResponse(a, b) {
     //TODO
-    return CollisionResponse.BOUNCE;
+    return CollisionResponse.PHYSIC;
   }
 
 
@@ -36,7 +36,7 @@ export default class CollisionManager
    * @param {Mover} mover 
    * @param {Vector} hit 
    */
-  boundResolver(mover, {normal, penetration}) {
+  reolverInfinite(mover, {normal, penetration}) {
     const normVelocity = Vector.dot(normal, mover.velocity);
     if (normVelocity > 0) return;
 
@@ -95,21 +95,24 @@ export default class CollisionManager
     this.pool.actors.forEach(a => {
       if(!a.collision || !a instanceof Mover) return;
 
-      a.collision.checkOutOfBounds(this.context, hit => this.boundResolver(a, hit));
+      a.collision.checkOutOfBounds(this.context, hit => this.reolverInfinite(a, hit));
     })
   }
 
 
   resolveCollisions() {
-    const array = this.pool.actors.filter(a => a instanceof Mover);
+    const array = this.pool.actors.filter(a => a.collision);
     
     pairs(array, (a, b) => {
       const hit = this.staticCollision(a.collision, b.collision);
       const response = this.getCollisionResponse(a, b);
     
       switch(response) {
-        case CollisionResponse.BOUNCE: {
-          if(hit) this.resolver(a, b, hit);
+        case CollisionResponse.PHYSIC: {
+          if(hit) {
+            if(!a instanceof Mover || !b instanceof Mover) return;
+            this.resolver(a, b, hit);
+          }
           break;
         }
 
@@ -133,6 +136,8 @@ export default class CollisionManager
    * @param {Collision} b 
    */
   staticCollision(a, b) {
+    //if(!a || !b) return false;
+
     return circleVScircle(a, b);
   }
 

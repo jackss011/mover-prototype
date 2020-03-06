@@ -8,7 +8,7 @@ export const CollisionType = Object.freeze({
 
 export const CollisionResponse = Object.freeze({
   IGNORE: 'IGNORE',
-  BOUNCE: 'BOUNCE',
+  PHYSIC: 'PHYSIC',
   OVERLAP: 'OVERLAP',
 });
 

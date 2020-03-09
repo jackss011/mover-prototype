@@ -1,5 +1,5 @@
 import p5, { Vector } from "p5";
-import { Collision } from "../collision";
+import { Collision } from "../collision/Collision";
 import Props from "./Prop";
 import Component from "./Component";
 

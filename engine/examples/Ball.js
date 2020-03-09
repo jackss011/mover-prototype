@@ -2,9 +2,9 @@ import p5, { Vector } from 'p5';
 import color from 'chroma-js'
 
 import Mover from '#/core/Mover'
-import {Circle} from '#/collision'
+import {Circle} from '../collision/Collision'
 import {Circle as Round} from '#/components/shapes'
-import { TraceMode, Collision } from '../collision';
+import { TraceMode, Collision } from '../collision/Collision';
 
 
 

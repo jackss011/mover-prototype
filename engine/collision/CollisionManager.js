@@ -1,7 +1,7 @@
 import { Vector } from 'p5';
 import Pool from '../core/Pool'
 import Mover from '../core/Mover'
-import {TraceMode, Collision, CollisionResponse, Circle} from './index'
+import {TraceMode, Collision, CollisionResponse, Circle} from './Collision'
 
 
 export default class CollisionManager 

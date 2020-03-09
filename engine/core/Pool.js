@@ -128,15 +128,19 @@ export default class Pool extends Context
 
 
         if(this.mouseClick) {
+            //console.time('trace');
             const res = this.collisionManager.verticalTrace(this.mouseClick, 'mouse');
+            //console.timeEnd('trace');
             if(res) console.log(res);
         }
 
         this.mouseClick = null;
         
 
+        // console.time('collision');
         this.collisionManager.resolveCollisionBounds();
         this.collisionManager.resolveCollisions();
+        // console.timeEnd('collision')
         
         this.actors.forEach(a => a.postTick(this.delta, this.context))
     }

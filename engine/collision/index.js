@@ -1,5 +1,8 @@
 import p5, { Vector } from "p5";
 
+import Actor from "../core/Actor";
+//import Mover from "../core/Mover";
+
 
 export const CollisionType = Object.freeze({
   CIRCLE: 'CIRCLE',
@@ -32,6 +35,15 @@ export class Collision {
     this.traceResponse = {default: TraceMode.IGNORE};
 
     this.restitution = 0.4;
+
+    /**@type {(Mover, Collision) => void} */
+    this.onHitHandler = null;
+
+    /**@type {(Actor, Collision) => void} */
+    this.onBeginOverlapHandler = null;
+
+    /**@type {(Actor, Collision) => void} */
+    this.onBeginOverlapHandler = null;
   }
 
   get TraceMode() {
@@ -62,6 +74,39 @@ export class Collision {
    */
   pointHit(point) {
     return false;
+  }
+
+
+  /**
+   * 
+   * @param {Mover} mover 
+   * @param {Collision} collision 
+   */
+  onHit(mover, collision, hit) {
+    if(this.onHitHandler)
+      this.onHitHandler(mover, collision, hit)
+  }
+
+
+  /**
+   * 
+   * @param {Actor} actor 
+   * @param {Collision} collision 
+   */
+  onBeginOverlap(actor, collision, hit) {
+    if(this.onBeginOverlap)
+      this.onBeginOverlap(actor, collision, hit)
+  }
+
+
+  /**
+   * 
+   * @param {Actor} actor 
+   * @param {Collision} collision 
+   */
+  onEndOverlap(actor, collision, hit) {
+    if(this.onEndOverlap)
+      this.onEndOverlap(actor, collision, hit)
   }
 }
 

@@ -112,6 +112,8 @@ export default class CollisionManager
           if(hit) {
             if(!a instanceof Mover || !b instanceof Mover) return;
             this.resolver(a, b, hit);
+            a.collision.onHit(b, b.collision, hit);
+            b.collision.onHit(a, a.collision, hit);
           }
           break;
         }

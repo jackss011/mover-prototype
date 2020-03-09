@@ -103,32 +103,40 @@ export default class CollisionManager
   resolveCollisions() {
     const array = this.pool.actors.filter(a => a.collision);
     
-    pairs(array, (a, b) => {
-      const hit = this.staticCollision(a.collision, b.collision);
-      const response = this.getCollisionResponse(a, b);
-    
-      switch(response) {
-        case CollisionResponse.PHYSIC: {
-          if(hit) {
-            if(!a instanceof Mover || !b instanceof Mover) return;
-            this.resolver(a, b, hit);
-            a.collision.onHit(b, b.collision, hit);
-            b.collision.onHit(a, a.collision, hit);
-          }
-          break;
+    pairs(array, (a, b) => this.resolvePair(a.collision, b.collision));
+  }
+
+
+  /**
+   * 
+   * @param {Collision} a 
+   * @param {Collision} b 
+   */
+  resolvePair(a, b) {
+    const hit = this.staticCollision(a, b);
+    const response = this.getCollisionResponse(a, b);
+  
+    switch(response) {
+      case CollisionResponse.PHYSIC: {
+        if(hit) {
+          if(!a.attachment instanceof Mover || !b.attachment instanceof Mover) return;
+          this.resolver(a.attachment, b.attachment, hit);
+          a.onHit(b.attachment, b, hit);
+          b.onHit(a.attachment, a, hit);
         }
-
-        case CollisionResponse.OVERLAP: {
-          if(hit) {
-
-          }
-          else {
-
-          }
-          break;
-        }
+        break;
       }
-    });
+
+      case CollisionResponse.OVERLAP: {
+        if(hit) {
+          //if(a.overlaps)
+        }
+        else {
+
+        }
+        break;
+      }
+    }
   }
 
 

@@ -47,6 +47,9 @@ export class Collision {
     /** @type {Array<Collision>} */
     this.overlaps = [];
 
+    /** @type {Array<Collision>} */
+    this.collisionIgnore = null;
+
 
     /**@type {(Mover, Collision) => void} */
     this.onHitHandler = null;

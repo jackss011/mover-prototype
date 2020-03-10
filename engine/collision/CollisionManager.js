@@ -218,6 +218,11 @@ export default class CollisionManager
    * @param {Collision} b 
    */
   resolvePair(a, b, response) {
+    // should ingore?
+    if(a.collisionIgnore && a.collisionIgnore.includes(b)) return;
+    if(b.collisionIgnore && b.collisionIgnore.includes(a)) return;
+
+
     const hit = this.staticCollision(a, b);
     //const response = this.getCollisionResponse(a, b);
   

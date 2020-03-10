@@ -12,6 +12,10 @@ export default class Mover extends Actor
         this.velocity = new Vector();
         this.cumulatedForces = new Vector();
         this.cumulatedImpulse = new Vector();
+
+        /** @type {Collision} */
+        this.collision = null;
+        this.boundsCheck = false;
         
         this.invMass = 1;
         this.linearDamping = 0;

@@ -10,9 +10,6 @@ export default class Actor extends Props
         super();
         
         this.position = new Vector();
-        
-        /** @type {Collision} */
-        this.collision = null;
 
         /** @type {Array<Component>} */
         this.components = [];

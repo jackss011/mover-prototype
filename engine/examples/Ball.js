@@ -18,13 +18,9 @@ export default class Ball extends Mover {
 
         this.radius = radius;
 
-        /** @type {Collision} */
-        this.collision = null;
+        this.boundsCheck = true;
 
         this.maxVelocity = 700;
-
-        /** @type {Round} */
-        this.shape = this.addComponent(new Round(this.radius));
     }
 
 
@@ -32,6 +28,9 @@ export default class Ball extends Mover {
         this.collision = this.registerCollision(new Circle(this.radius));
         this.collision.attachment = this;
         this.collision.traceResponse.mouse = TraceMode.PASS;
+
+        /** @type {Round} */
+        this.shape = this.addComponent(new Round(this.radius));
     }
 
 

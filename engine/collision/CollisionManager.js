@@ -2,6 +2,9 @@ import { Vector } from 'p5';
 import Pool from '../core/Pool'
 import Mover from '../core/Mover'
 import {TraceMode, Collision, CollisionResponse, Circle, EngineCollisionChannel} from './Collision'
+import * as Physics from './Physics'
+import * as Mutuals from './Mutuals'
+import {pairs, doublePairs} from './utils'
 
 
 
@@ -48,12 +51,12 @@ export default class CollisionManager
   }
 
 
-/**
- * 
- * @param {string} idA 
- * @param {string} idB 
- * @param {string} response 
- */
+  /**
+   * 
+   * @param {string} idA 
+   * @param {string} idB 
+   * @param {string} response 
+   */
   configureCollisionResponse(idA, idB, response = null) {
     if(response && response !== CollisionResponse.IGNORE) {
       const pair = [idA, idB].sort();
@@ -127,70 +130,13 @@ export default class CollisionManager
 
   /**
    * 
-   * @param {Mover} mover 
-   * @param {Vector} hit 
-   */
-  reolverInfinite(mover, {normal, penetration}) {
-    const normVelocity = Vector.dot(normal, mover.velocity);
-    if (normVelocity > 0) return;
-
-    const e = mover.physics.boundsRestitution;
-
-    const impulse = Vector.mult(normal, -(1 + e) * normVelocity * mover.mass)
-    mover.applyImpulse(impulse);
-
-    const p = 0.5;
-
-    let correction = Vector.mult(normal, p * penetration);
-    mover.position.add(correction);
-  }
-
-
-
-  /**
-   * 
-   * @param {Mover} a 
-   * @param {Mover} b 
-   * @param {} param2 
-   */
-  resolver(a, b, {normal, penetration}) {
-    const abv = Vector.sub(b.velocity, a.velocity);
-    const normVelocity = Vector.dot(normal, abv);
-
-    if(normVelocity > 0) return;
-
-    const e = Math.min(a.physics.restitution, b.physics.restitution);
-
-    const impulse = Vector.mult(normal, -(1 + e) * normVelocity / (a.invMass + b.invMass));
-
-    //const before = (a.velocity.magSq() + b.velocity.magSq()).toFixed(0)
-    
-    a.applyImpulse(Vector.mult(impulse, -a.invMass));
-    b.applyImpulse(Vector.mult(impulse, b.invMass));
-
-    //const after = (a.velocity.magSq() + b.velocity.magSq()).toFixed(0)
-    //console.log({delta: after - before });
-
-    const p = penetration > 3 ? 0.8 : 0.3;
-    
-    const correction = Vector.mult(normal, p * penetration / (a.invMass + b.invMass));
-    a.position.add(Vector.mult(correction, -a.invMass));
-    b.position.add(Vector.mult(correction, b.invMass));
-
-    //console.log(correction);
-    
-  }
-
-
-  /**
-   * 
    */
   resolveCollisionBounds() {
     this.pool.actors.forEach(a => {
       if(!a.collision || !a instanceof Mover) return;
 
       if(a.physics.boundsCheck)
-        a.collision.checkOutOfBounds(this.context, hit => this.reolverInfinite(a, hit));
+        a.collision.checkOutOfBounds(this.context, hit => Physics.resolveBoundCollision(a, hit));
     })
   }
 
@@ -222,7 +168,6 @@ export default class CollisionManager
   }
 
 
-
   /**
    * 
    * @param {Collision} a 
@@ -241,7 +186,7 @@ export default class CollisionManager
         if(hit) {
           if(!a.attachment instanceof Mover || !b.attachment instanceof Mover) return;
 
-          this.resolver(a.attachment, b.attachment, hit);
+          Physics.resolveCollision(a.attachment, b.attachment, hit);
 
           a.onHit(b, hit);
           b.onHit(a, hit);
@@ -286,9 +231,9 @@ export default class CollisionManager
    * @param {Collision} b 
    */
   staticCollision(a, b) {
-    //if(!a || !b) return false;
+    // TODO
 
-    return circleVScircle(a, b);
+    return Mutuals.circleVScircle(a, b);
   }
 
 
@@ -319,52 +264,4 @@ export default class CollisionManager
 
     return res;
   }
-}
-
-
-
-
-/**
- * 
- * @param {Circle} a 
- * @param {Circle} b 
- */
-function circleVScircle(a, b) {
-  const ab = Vector.sub(b.position, a.position);
-  const d2 = ab.magSq();
-
-  const r = a.radius + b.radius;
-  const r2 = r * r;
-
-  if(d2 > r2) return false;
-
-  const d = Math.sqrt(d2);
-
-  const normal = Vector.div(ab, d);
-  const penetration = r - d;
-
-  return {normal, penetration};
-}
-
-
-
-/**
- * 
- * @param {Array<T>} array 
- * @param {(a: T, b: T) => void} action
- */
-function pairs(array, action) {
-  for(let i = 0; i < array.length - 1; i++)
-    for(let j = i + 1; j < array.length; j++)
-      action(array[i], array[j]);
-}
-
-
-/**
- * @param {Array<T>} arrayA
- * @param {Array<T>} arrayB
- * @param {(a: T, b: T) => void} action
- */
-function doublePairs(arrayA, arrayB, action) {
-  arrayA.forEach(a => arrayB.forEach(b => action(a, b)));
 }

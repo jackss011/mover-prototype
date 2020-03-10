@@ -51,6 +51,12 @@ export default class CollisionManager
     if(response && response !== CollisionResponse.IGNORE) {
       const pair = [idA, idB].sort();
 
+      if(!this.collisonChannelExists(idA))
+        this.createCollisionChannel(idA, null);
+      
+      if(!this.collisonChannelExists(idB))
+        this.createCollisionChannel(idB, null);
+
       this.collisionResponses.push({pair, response});
     }
   }
@@ -322,6 +328,6 @@ function pairs(array, action) {
  * @param {Array<T>} arrayB
  * @param {(a: T, b: T) => void} action
  */
-function doublePairs(arrayA, arrayB) {
+function doublePairs(arrayA, arrayB, action) {
   arrayA.forEach(a => arrayB.forEach(b => action(a, b)));
 }

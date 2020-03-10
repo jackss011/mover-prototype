@@ -9,6 +9,17 @@ export class Controller extends Prop {
     constructor() {
         super();
     }
+
+    configureCollisions({responses}) {
+        const CM = this.pool.collisionManager;
+        
+        responses.forEach(r => {
+            CM.configureCollisionResponse(r.ids[0], r.ids[1], r.response);
+        });
+
+        console.log(CM, responses);
+        
+    }
 } 
 
 /**

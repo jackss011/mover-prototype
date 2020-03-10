@@ -127,9 +127,9 @@ export default class CollisionManager
     const normVelocity = Vector.dot(normal, mover.velocity);
     if (normVelocity > 0) return;
 
-    const restitution = 1;
+    const e = mover.physics.boundsRestitution;
 
-    const impulse = Vector.mult(normal, -(1 + restitution) * normVelocity * mover.mass)
+    const impulse = Vector.mult(normal, -(1 + e) * normVelocity * mover.mass)
     mover.applyImpulse(impulse);
 
     const p = 0.5;
@@ -152,7 +152,7 @@ export default class CollisionManager
 
     if(normVelocity > 0) return;
 
-    const e = Math.min(a.collision.restitution, b.collision.restitution);
+    const e = Math.min(a.physics.restitution, b.physics.restitution);
 
     const impulse = Vector.mult(normal, -(1 + e) * normVelocity / (a.invMass + b.invMass));
 
@@ -182,7 +182,7 @@ export default class CollisionManager
     this.pool.actors.forEach(a => {
       if(!a.collision || !a instanceof Mover) return;
 
-      if(a.boundsCheck)
+      if(a.physics.boundsCheck)
         a.collision.checkOutOfBounds(this.context, hit => this.reolverInfinite(a, hit));
     })
   }

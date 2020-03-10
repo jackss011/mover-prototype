@@ -17,6 +17,10 @@ const responses = [
     {
         ids: [Channels.Ball, Channels.Obstacle],
         response: CollisionResponse.PHYSIC,
+    },
+    {
+        ids: [Channels.Obstacle, Channels.Obstacle],
+        response: CollisionResponse.PHYSIC,
     }
 ]
 

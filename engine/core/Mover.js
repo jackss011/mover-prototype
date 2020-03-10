@@ -15,11 +15,17 @@ export default class Mover extends Actor
 
         /** @type {Collision} */
         this.collision = null;
-        this.boundsCheck = false;
+        
+        this.physics = {
+            boundsCheck: true,
+            restitution: 1,
+            boundsRestitution: 1,
+        }
         
         this.invMass = 1;
         this.linearDamping = 0;
         this.maxVelocity = 2000;
+
     }
 
 

@@ -9,6 +9,7 @@ export const CollisionType = Object.freeze({
 });
 
 
+
 export const CollisionResponse = Object.freeze({
   IGNORE: 'IGNORE',
   PHYSIC: 'PHYSIC',
@@ -16,12 +17,17 @@ export const CollisionResponse = Object.freeze({
 });
 
 
+export const EngineCollisionChannel = Object.freeze({
+  DEFAULT: "ENGINE_DEFAULT",
+});
+
 
 export const TraceMode = Object.freeze({
   IGNORE: 'IGNORE',
   PASS: 'PASS',
   BLOCK: 'BLOCK',
 });
+
 
 
 export class Collision {
@@ -32,9 +38,15 @@ export class Collision {
     /** @type {Actor} */
     this.attachment = null;
 
+
     this.traceResponse = {default: TraceMode.IGNORE};
 
+    /** @type {string} */
+    this.collisionChannel = EngineCollisionChannel.DEFAULT;
+
+
     this.restitution = 0.4;
+
 
     /**@type {(Mover, Collision) => void} */
     this.onHitHandler = null;
@@ -46,11 +58,12 @@ export class Collision {
     this.onBeginOverlapHandler = null;
   }
 
+
   get TraceMode() {
     return TraceMode;
   }
 
-  
+
   get position() {
     if(this.attachment) 
       return this.attachment.position;
@@ -114,7 +127,7 @@ export class Collision {
 
 export class Circle extends Collision {
   /**
-   * 
+   *
    * @param {number} radius 
    */
   constructor(radius) {

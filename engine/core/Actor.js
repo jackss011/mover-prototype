@@ -14,7 +14,6 @@ export default class Actor extends Props
         /** @type {Collision} */
         this.collision = null;
 
-
         /** @type {Array<Component>} */
         this.components = [];
     }
@@ -25,13 +24,23 @@ export default class Actor extends Props
      * @param {Component} component 
      */
     addComponent(component) {
-        if(!component instanceof Component) return;
+        if(!component instanceof Component) {
+            Console.error(component, "is not a component");
+            return;
+        }
 
         this.components.push(component);
         component.actor = this;
+
         component.init();
 
         return component;
+    }
+
+
+    registerCollision(collision) {
+        this.collisionManager.addCollision(collision);
+        return collision;
     }
 
 

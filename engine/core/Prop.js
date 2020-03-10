@@ -3,7 +3,7 @@ import Pool from './Pool';
 import Context from "./Context";
 
 
-export default class Props extends Context
+export default class Prop extends Context
 {
     constructor() {
         super();
@@ -13,6 +13,12 @@ export default class Props extends Context
 
         this.destroyed = false;
     }
+
+
+    get collisionManager() {
+        return this.pool.collisionManager;
+    }
+
 
 
     /**

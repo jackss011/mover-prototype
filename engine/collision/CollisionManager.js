@@ -1,7 +1,7 @@
 import { Vector } from 'p5';
 import Pool from '../core/Pool'
 import Mover from '../core/Mover'
-import {TraceMode, Collision, CollisionResponse, Circle} from './Collision'
+import {TraceMode, Collision, CollisionResponse, Circle, EngineCollisionChannel} from './Collision'
 
 
 export default class CollisionManager 
@@ -9,15 +9,53 @@ export default class CollisionManager
   constructor(pool) {
     /** @type {Pool} */
     this.pool = pool;
+
+    this.collisionResponses = [];
+    this.collisions = {};
+
+    this.createCollisionChannel(EngineCollisionChannel.DEFAULT);
   }
 
 
-  /**
+    /**
    * 
    */
   get context() {
     return this.pool.context;
   }
+
+
+  collisonChannelExists(id) {
+    return !(this.collisions[id] === undefined);
+  }
+
+/**
+ *
+ * @param {hit: {id: string, selfResponse: string}} param0 
+ */
+  createCollisionChannel(id, selfResponse) {
+    if(!this.collisonChannelExists(id)) {
+      this.collisions[id] = [];
+      this.configureCollisionResponse(id, id, selfResponse || null);
+    }
+  }
+
+
+/**
+ * 
+ * @param {string} idA 
+ * @param {string} idB 
+ * @param {string} response 
+ */
+  configureCollisionResponse(idA, idB, response = null) {
+    if(response && response !== CollisionResponse.IGNORE) {
+      const pair = [idA, idB].sort();
+
+      this.collisionResponses.push({pair, response});
+    }
+  }
+
+
 
 
   /**
@@ -26,10 +64,31 @@ export default class CollisionManager
    * @param {Collision} b 
    */
   getCollisionResponse(a, b) {
-    //TODO
-    return CollisionResponse.PHYSIC;
+    const [idA, idB] = [a, b].sort();
+    
+    return this.collisionResponses
+      .find(( {pair} ) => idA === pair[0] && idB === pair[1])
+      || CollisionResponse.IGNORE;
   }
 
+  /**
+   * 
+   * @param {Collision} collision 
+   */
+  addCollision(collision) {
+    if(!collision instanceof Collision) return;
+
+    const channel = collision.collisionChannel;
+
+    if(channel) {
+      if(!this.collisonChannelExists(channel)) {
+        console.error(`Channel ${channel} is not registered`);
+        return;
+      }
+
+      this.collisions[channel].push(collision);
+    }
+  }
 
   /**
    * 

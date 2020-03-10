@@ -44,8 +44,8 @@ export class Collision {
     /** @type {string} */
     this.collisionChannel = EngineCollisionChannel.DEFAULT;
 
-
-    this.restitution = 0.4;
+    /** @type {Array<Collision>} */
+    this.overlaps = [];
 
 
     /**@type {(Mover, Collision) => void} */
@@ -55,7 +55,7 @@ export class Collision {
     this.onBeginOverlapHandler = null;
 
     /**@type {(Actor, Collision) => void} */
-    this.onBeginOverlapHandler = null;
+    this.onEndOverlapHandler = null;
   }
 
 
@@ -92,34 +92,31 @@ export class Collision {
 
   /**
    * 
-   * @param {Mover} mover 
    * @param {Collision} collision 
    */
-  onHit(mover, collision, hit) {
+  onHit(collision, hit) {
     if(this.onHitHandler)
-      this.onHitHandler(mover, collision, hit)
+      this.onHitHandler(collision.attachment, collision, hit)
   }
 
 
   /**
    * 
-   * @param {Actor} actor 
    * @param {Collision} collision 
    */
-  onBeginOverlap(actor, collision, hit) {
-    if(this.onBeginOverlap)
-      this.onBeginOverlap(actor, collision, hit)
+  onBeginOverlap(collision, hit) {
+    if(this.onBeginOverlapHandler)
+      this.onBeginOverlapHandler(collision.attachment, collision, hit);
   }
 
 
   /**
    * 
-   * @param {Actor} actor 
    * @param {Collision} collision 
    */
-  onEndOverlap(actor, collision, hit) {
-    if(this.onEndOverlap)
-      this.onEndOverlap(actor, collision, hit)
+  onEndOverlap(collision, hit) {
+    if(this.onEndOverlapHandler)
+      this.onEndOverlapHandler(collision.attachment, collision, hit)
   }
 }
 

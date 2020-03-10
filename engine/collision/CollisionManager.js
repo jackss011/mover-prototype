@@ -225,19 +225,38 @@ export default class CollisionManager
       case CollisionResponse.PHYSIC: {
         if(hit) {
           if(!a.attachment instanceof Mover || !b.attachment instanceof Mover) return;
+
           this.resolver(a.attachment, b.attachment, hit);
-          a.onHit(b.attachment, b, hit);
-          b.onHit(a.attachment, a, hit);
+
+          a.onHit(b, hit);
+          b.onHit(a, hit);
         }
         break;
       }
 
       case CollisionResponse.OVERLAP: {
+        const alreadyOverlap = a.overlaps.includes(b);
+
         if(hit) {
-          //if(a.overlaps)
+          if(!alreadyOverlap) {
+            a.overlaps.push(b);
+            b.overlaps.push(a);
+
+            a.onBeginOverlap(b, hit);
+            b.onBeginOverlap(a, hit);            
+          }
         }
         else {
+          if(alreadyOverlap) {
+            const removeA = a.overlaps.findIndex(i => i === b);
+            a.overlaps.splice(removeA);
 
+            const removeB = b.overlaps.findIndex(i => i === a);
+            b.overlaps.splice(removeB);
+
+            a.onEndOverlap(b, hit);
+            b.onEndOverlap(a, hit);
+          }
         }
         break;
       }

@@ -16,7 +16,7 @@ const Channels = {
 const responses = [
     {
         ids: [Channels.Ball, Channels.Obstacle],
-        response: CollisionResponse.PHYSIC,
+        response: CollisionResponse.OVERLAP,
     },
     {
         ids: [Channels.Obstacle, Channels.Obstacle],
@@ -30,6 +30,11 @@ class Obstacle extends Ball {
         super(10);
 
         this.collision.collisionChannel = Channels.Obstacle;
+
+        this.collision.onBeginOverlapHandler = (a, c, h) => console.log('begin', a, c);
+        this.collision.onEndOverlapHandler = (a, c, h) => console.log('end');
+
+        
     }
 }
 
@@ -62,7 +67,7 @@ class TestController extends Engine.Controller {
         const target = this.pool.spawnActor(new Target(), new Vector(200, 200));
         follower.target = target;
 
-        grid2D(10, 10, 30).forEach(({x, y}) => {
+        grid2D(1, 1, 30).forEach(({x, y}) => {
             const obstacle = this.pool.spawnActor(new Obstacle(), new Vector(x, y).add(50, 50))
            // obstacle.collision.channel
         });

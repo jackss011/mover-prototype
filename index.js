@@ -13,14 +13,12 @@ const Channels = {
     Obstacle: 'OBSTACLE',
 }
 
-const CollisionConfig = {
-    responses: [
-        {
-            ids: [Channels.Ball, Channels.Obstacle],
-            response: CollisionResponse.PHYSIC,
-        }
-    ]
-}
+const responses = [
+    {
+        ids: [Channels.Ball, Channels.Obstacle],
+        response: CollisionResponse.PHYSIC,
+    }
+]
 
 
 class Obstacle extends Ball {
@@ -42,10 +40,14 @@ class Follower extends Ball {
 
 
 class TestController extends Engine.Controller {
+    constructor() {
+        super();
+
+        this.collisionConfig = {responses}
+    }
+
     begin() {
         super.begin();
-
-        this.configureCollisions(CollisionConfig);
         
         const follower = this.pool.spawnActor(new Follower(), new Vector(500, 200));
         follower.mass = 1;

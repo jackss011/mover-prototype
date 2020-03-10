@@ -8,6 +8,16 @@ import Prop from './core/Prop';
 export class Controller extends Prop {
     constructor() {
         super();
+
+        this.collisionConfig = {
+            responses: [],
+        }
+    }
+
+    begin() {
+        super.begin();
+
+        this.configureCollisions(this.collisionConfig);
     }
 
     configureCollisions({responses}) {
@@ -16,9 +26,6 @@ export class Controller extends Prop {
         responses.forEach(r => {
             CM.configureCollisionResponse(r.ids[0], r.ids[1], r.response);
         });
-
-        console.log(CM, responses);
-        
     }
 } 
 

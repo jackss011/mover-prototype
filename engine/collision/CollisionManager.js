@@ -4,6 +4,7 @@ import Mover from '../core/Mover'
 import {TraceMode, Collision, CollisionResponse, Circle, EngineCollisionChannel} from './Collision'
 
 
+
 export default class CollisionManager 
 {
   constructor(pool) {
@@ -17,7 +18,7 @@ export default class CollisionManager
   }
 
 
-    /**
+  /**
    * 
    */
   get context() {
@@ -25,14 +26,20 @@ export default class CollisionManager
   }
 
 
+  /**
+   * 
+   * @param {string} id 
+   * @returns {boolean}
+   */
   collisonChannelExists(id) {
     return !(this.collisions[id] === undefined);
   }
 
-/**
- *
- * @param {hit: {id: string, selfResponse: string}} param0 
- */
+
+  /**
+   *
+   * @param {hit: {id: string, selfResponse: string}} param0 
+   */
   createCollisionChannel(id, selfResponse) {
     if(!this.collisonChannelExists(id)) {
       this.collisions[id] = [];
@@ -62,8 +69,6 @@ export default class CollisionManager
   }
 
 
-
-
   /**
    * 
    * @param {Collision} a 
@@ -76,6 +81,7 @@ export default class CollisionManager
       .find(( {pair} ) => idA === pair[0] && idB === pair[1])
       || CollisionResponse.IGNORE;
   }
+
 
   /**
    * 
@@ -117,6 +123,7 @@ export default class CollisionManager
 
     cList.splice(removeIndex, 1);
   }
+
 
   /**
    * 
@@ -188,6 +195,9 @@ export default class CollisionManager
   }
 
 
+  /**
+   * 
+   */
   resolveCollisions() {
     //const array = this.pool.actors.filter(a => a.collision);
     //pairs(array, (a, b) => this.resolvePair(a.collision, b.collision));
@@ -212,6 +222,7 @@ export default class CollisionManager
   }
 
 
+
   /**
    * 
    * @param {Collision} a 
@@ -221,7 +232,6 @@ export default class CollisionManager
     // should ingore?
     if(a.collisionIgnore && a.collisionIgnore.includes(b)) return;
     if(b.collisionIgnore && b.collisionIgnore.includes(a)) return;
-
 
     const hit = this.staticCollision(a, b);
     //const response = this.getCollisionResponse(a, b);
@@ -269,6 +279,7 @@ export default class CollisionManager
   }
 
 
+
   /**
    * 
    * @param {Collision} a 
@@ -279,6 +290,8 @@ export default class CollisionManager
 
     return circleVScircle(a, b);
   }
+
+
 
   /**
    * 

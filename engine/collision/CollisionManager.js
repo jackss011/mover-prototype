@@ -73,12 +73,12 @@ export default class CollisionManager
 
   /**
    * 
-   * @param {Collision} collision 
+   * @param {Collision} c 
    */
-  addCollision(collision) {
-    if(!collision instanceof Collision) return;
+  addCollision(c) {
+    if(!c instanceof Collision) return;
 
-    const channel = collision.collisionChannel;
+    const channel = c.collisionChannel;
 
     if(channel) {
       if(!this.collisonChannelExists(channel)) {
@@ -86,8 +86,30 @@ export default class CollisionManager
         return;
       }
 
-      this.collisions[channel].push(collision);
+      this.collisions[channel].push(c);
     }
+  }
+
+
+  /**
+   * 
+   * @param {Collision} c 
+   */
+  removeCollision(c) {
+    if(!c instanceof Collision) {
+      console.error(c, "is not a collision");
+      return;
+    }
+
+    const cList = this.collisions[c.collisionChannel];
+    const removeIndex = cList.findIndex(item => item === c);
+
+    if(removeIndex < 0) {
+      console.error(c, "is not a regestered collision");
+      return;
+    }
+
+    cList.splice(removeIndex, 1);
   }
 
   /**

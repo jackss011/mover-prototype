@@ -11,7 +11,7 @@ class TestController extends Engine.Controller {
         super.begin();
         
         const follower = this.pool.spawnActor(new Ball(15), new Vector(500, 200));
-        follower.mass = 30;
+        follower.mass = 1;
         
         // const ball2 = this.pool.spawnActor(new Ball(40), new Vector(300, 300));
         // ball2.mass = 10;

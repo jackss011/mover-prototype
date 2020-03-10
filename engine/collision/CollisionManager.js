@@ -13,7 +13,7 @@ export default class CollisionManager
     this.collisionResponses = [];
     this.collisions = {};
 
-    this.createCollisionChannel(EngineCollisionChannel.DEFAULT);
+    this.createCollisionChannel(EngineCollisionChannel.DEFAULT, null);
   }
 
 
@@ -151,18 +151,35 @@ export default class CollisionManager
    * 
    */
   resolveCollisionBounds() {
-    this.pool.actors.forEach(a => {
-      if(!a.collision || !a instanceof Mover) return;
+    // this.pool.actors.forEach(a => {
+    //   if(!a.collision || !a instanceof Mover) return;
 
-      a.collision.checkOutOfBounds(this.context, hit => this.reolverInfinite(a, hit));
-    })
+    //   a.collision.checkOutOfBounds(this.context, hit => this.reolverInfinite(a, hit));
+    // })
   }
 
 
   resolveCollisions() {
-    const array = this.pool.actors.filter(a => a.collision);
-    
-    pairs(array, (a, b) => this.resolvePair(a.collision, b.collision));
+    //const array = this.pool.actors.filter(a => a.collision);
+    //pairs(array, (a, b) => this.resolvePair(a.collision, b.collision));
+
+    this.collisionResponses.forEach(({pair, response}) => {
+      const [channelA, channelB] = pair;
+
+      if(channelA === channelB) {
+        pairs(
+          this.collisions[channelA],
+          (a, b) => this.resolvePair(a, b, response),
+        );
+      }
+      else {
+        doublePairs(
+          this.collisions[channelA],
+          this.collisions[channelB],
+          (a, b) => this.resolvePair(a, b, response),
+        );
+      }
+    });
   }
 
 
@@ -171,9 +188,9 @@ export default class CollisionManager
    * @param {Collision} a 
    * @param {Collision} b 
    */
-  resolvePair(a, b) {
+  resolvePair(a, b, response) {
     const hit = this.staticCollision(a, b);
-    const response = this.getCollisionResponse(a, b);
+    //const response = this.getCollisionResponse(a, b);
   
     switch(response) {
       case CollisionResponse.PHYSIC: {
@@ -274,4 +291,14 @@ function pairs(array, action) {
   for(let i = 0; i < array.length - 1; i++)
     for(let j = i + 1; j < array.length; j++)
       action(array[i], array[j]);
+}
+
+
+/**
+ * @param {Array<T>} arrayA
+ * @param {Array<T>} arrayB
+ * @param {(a: T, b: T) => void} action
+ */
+function doublePairs(arrayA, arrayB) {
+  arrayA.forEach(a => arrayB.forEach(b => action(a, b)));
 }

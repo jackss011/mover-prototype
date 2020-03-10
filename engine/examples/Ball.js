@@ -19,14 +19,19 @@ export default class Ball extends Mover {
         this.radius = radius;
 
         /** @type {Collision} */
-        this.collision = this.registerCollision(new Circle(this.radius));
-        this.collision.attachment = this;
-        this.collision.traceResponse.mouse = TraceMode.PASS;
+        this.collision = null;
 
         this.maxVelocity = 700;
 
         /** @type {Round} */
         this.shape = this.addComponent(new Round(this.radius));
+    }
+
+
+    build() {
+        this.collision = this.registerCollision(new Circle(this.radius));
+        this.collision.attachment = this;
+        this.collision.traceResponse.mouse = TraceMode.PASS;
     }
 
 

@@ -46,6 +46,8 @@ export default class Pool extends Context
     initProp(prop) {
         prop.context = this.context;
         prop.pool = this;
+        
+        prop.build();
 
         return prop;
     }

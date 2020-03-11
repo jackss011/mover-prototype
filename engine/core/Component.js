@@ -12,7 +12,7 @@ export default class Component extends Context {
         /** @type {Actor} */
         this.actor = null;
 
-        this.begun = false;
+        this.hasBegun = false;
     }
 
 

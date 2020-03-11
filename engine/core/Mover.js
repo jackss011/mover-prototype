@@ -57,6 +57,8 @@ export default class Mover extends Actor
      * @param {p5} context 
      */
     tick(delta, context) {
+        super.tick(delta, context);
+
         const dv = this.cumulatedForces.mult(delta * this.invMass);
         this.velocity.add(dv);
 

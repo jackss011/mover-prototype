@@ -13,6 +13,9 @@ export default class Actor extends Props
 
         /** @type {Array<Component>} */
         this.components = [];
+
+        this.componentRequireBegin = false;
+        this.hasBegun = false;
     }
 
 
@@ -26,6 +29,9 @@ export default class Actor extends Props
             return;
         }
 
+        
+        this.componentRequireBegin = true;
+        
         this.components.push(component);
         component.actor = this;
 
@@ -60,7 +66,16 @@ export default class Actor extends Props
      * @param {p5} context 
      */
     tick(delta, context) {
-        super.delta(delta, context);
+        super.tick(delta, context);
+
+        if(this.componentRequireBegin) {
+            this.components.forEach(c => {
+                if(!c.hasBegun) {
+                    c.begin();
+                    c.hasBegun = true;
+                }
+            });
+        }
 
         this.components.forEach(c => c.tick(delta, context));
     }

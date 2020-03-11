@@ -24,7 +24,7 @@ export default class Pool extends Context
         /** @type {Array<Actor>} */
         this.actors = [];
 
-        this.actorBeginFlag = false;
+        this.actorRequireBegin = false;
         
         /** @type {Array<Timer>} */
         this.timers = [];
@@ -75,7 +75,7 @@ export default class Pool extends Context
      * @returns {Actor}
      */
     spawnActor(actor, position) {
-        this.actorBeginFlag = true;
+        this.actorRequireBegin = true;
 
         this.initProp(actor);
         actor.position = position;
@@ -127,13 +127,13 @@ export default class Pool extends Context
 
     beginAllActors() {
         this.actors.forEach(a => {
-            if(!a.begun) {
-                a.begun = true;
+            if(!a.hasBegun) {
+                a.hasBegun = true;
                 a.begin();
             }
         });
 
-        this.actorBeginFlag = false;
+        this.actorRequireBegin = false;
     }
 
 
@@ -152,7 +152,7 @@ export default class Pool extends Context
     tick() {
         this.updateDelta();
 
-        if(this.actorBeginFlag)
+        if(this.actorRequireBegin)
             this.beginAllActors();
 
         // controller tick

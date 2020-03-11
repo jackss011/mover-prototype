@@ -30,8 +30,7 @@ export default class Prop extends Context
     /**
      * 
      */
-    begin() {console.log(this);
-    }
+    begin() {}
 
     
     /**

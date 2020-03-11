@@ -13,20 +13,20 @@ export class CollisionComponent extends Component {
 
 
   /** @returns {Collision} */
-  get get() {
+  get collider() {
     return this._collision;
   }
 
 
   init() {
-    this.get.attachment = this.actor;
-    this.actor.registerCollision(this.get);
+    this.collider.attachment = this.actor;
+    this.actor.registerCollision(this.collider);
   }
 
 
   onDestroy() {
     super.onDestroy();
 
-    this.actor.unregisterCollision(this.get);
+    this.actor.unregisterCollision(this.collider);
   }
 }

@@ -258,7 +258,7 @@ export default class CollisionManager
       }
 
       const hit = c.pointHit(point);
-      if(hit) res.push({actor: c.attachment, hit});
+      if(hit) res.push({actor: c.attachment, collision: c, hit});
     })
 
     return res;

@@ -85,6 +85,23 @@ export default class Pool extends Context
 
     /**
      * 
+     * @param {Actor} actor 
+     */
+    removeActor(actor) {
+        const removeIndex = this.actors.findIndex(a => a === actor);
+
+        if(removeIndex < 0) {
+            console.error(actor, "is not an actor");
+            return;
+        }
+
+        this.actors.splice(removeIndex, 1);
+        actor.onDestroy();
+    }
+
+
+    /**
+     * 
      * @param {Timer} timer 
      */
     addTimer(timer) {
@@ -144,6 +161,10 @@ export default class Pool extends Context
         this.collisionManager.resolveCollisions();
         // console.timeEnd('collision')
         
-        this.actors.forEach(a => a.postTick(this.delta, this.context))
+        this.actors.forEach(a => {
+            a.postTick(this.delta, this.context);
+
+            if(a.destroyed) this.removeActor(a);
+        })
     }
 }

@@ -30,7 +30,7 @@ export default class Ball extends Mover {
 
 
     build() {
-        this.registerCollision(this.collision);
+        super.build();
 
         /** @type {Round} */
         this.shape = this.addComponent(new Round(this.radius));

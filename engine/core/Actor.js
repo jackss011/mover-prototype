@@ -35,8 +35,22 @@ export default class Actor extends Props
     }
 
 
+    /**
+     * 
+     * @param {Collision} collision 
+     */
     registerCollision(collision) {
         this.collisionManager.addCollision(collision);
+        return collision;
+    }
+
+
+    /**
+     * 
+     * @param {Collision} collision 
+     */
+    unregisterCollision(collision) {
+        this.collisionManager.removeCollision(collision);
         return collision;
     }
 
@@ -70,5 +84,10 @@ export default class Actor extends Props
         super.onDestroy();
 
         this.components.forEach(c => c.onDestroy());
+    }
+
+
+    destroy() {
+        this.destroyed = true;
     }
 }

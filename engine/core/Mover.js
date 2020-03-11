@@ -44,6 +44,13 @@ export default class Mover extends Actor
         return this.invMass == 0 ? 0 : 1 / this.invMass;
     }
 
+
+    build() {
+        super.build();
+
+        this.registerCollision(this.collision);
+    }
+
     /**
      * 
      * @param {number} delta 
@@ -87,5 +94,15 @@ export default class Mover extends Actor
      */
     applyImpulse(impulse) {
         this.velocity.add(Vector.mult(impulse, this.invMass));
+    }
+
+
+    /**
+     * 
+     */
+    onDestroy() {
+        super.onDestroy();
+
+        this.unregisterCollision(this.collision);
     }
 }

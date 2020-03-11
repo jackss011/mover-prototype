@@ -31,6 +31,8 @@ class Obstacle extends Ball {
 
         this.collision.collisionChannel = Channels.Obstacle;
 
+        this.collision.onBeginOverlapHandler = () => this.destroy();
+
         // this.collision.onBeginOverlapHandler = (a, c, h) => console.log('begin', a, c);
         // this.collision.onEndOverlapHandler = (a, c, h) => console.log('end');
 

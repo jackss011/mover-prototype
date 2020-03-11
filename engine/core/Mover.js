@@ -59,17 +59,18 @@ export default class Mover extends Actor
     tick(delta, context) {
         super.tick(delta, context);
 
+        if(this.linearDamping > 0) {
+            const basicallyStill = this.velocity.magSq() < 1e-4;
+            
+            const damping = !basicallyStill || !(delta > 0 && this.invMass > 0)
+                ? Vector.mult(this.velocity, -1 * this.linearDamping * delta)
+                : Vector.mult(this.velocity, -1 * (1 / delta) * (1 / this.invMass));
+
+            this.applyForce(damping);
+        }
+
         const dv = this.cumulatedForces.mult(delta * this.invMass);
         this.velocity.add(dv);
-
-        if(this.linearDamping > 0) {
-            const dvD = Math.sqrt(this.velocity.mag()) * this.linearDamping * delta * this.invMass;
-
-            if(this.velocity.mag() < 0.1 && dvD > dv.mag())
-                this.velocity.set(0, 0);
-            else
-                this.velocity.mult(1 - dvD);
-        }
         
         this.cumulatedForces.set(0, 0);
 

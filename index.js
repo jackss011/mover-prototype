@@ -46,6 +46,7 @@ class Follower extends Ball {
         super(15);
 
         this.collision.collisionChannel = Channels.Ball;
+        this.linearDamping = 40;
     }
 }
 

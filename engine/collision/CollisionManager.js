@@ -247,21 +247,31 @@ export default class CollisionManager
     const res = [];
     let done = false;
 
-    this.pool.actors.forEach(a => {
-      if(!a.collision || done) return;
+    this.forEachCollision(c => {
+      if(done) return;
 
       if(traceChannel) {
-        const response = 
-          a.collision.traceResponse[traceChannel] || a.collision.traceResponse.default;
+        const response = c.traceResponse[traceChannel] || c.traceResponse.default;
 
         if(response === TraceMode.BLOCK) done = true;
         if(response === TraceMode.IGNORE || response == null) return;
       }
 
-      const hit = a.collision.pointHit(point);
-      if(hit) res.push({actor: a, hit});
+      const hit = c.pointHit(point);
+      if(hit) res.push({actor: c.attachment, hit});
     })
 
     return res;
+  }
+
+
+  /**
+   * 
+   * @param {(c: Collision) => void} action 
+   */
+  forEachCollision(action) {
+    Object.entries(this.collisions).forEach(([channel, list]) => 
+      list.forEach(c => action(c))
+    )
   }
 }

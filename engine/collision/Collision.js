@@ -1,16 +1,25 @@
 import p5, { Vector } from "p5";
 
+import Actor from "../core/Actor";
+//import Mover from "../core/Mover";
+
 
 export const CollisionType = Object.freeze({
   CIRCLE: 'CIRCLE',
 });
 
 
+
 export const CollisionResponse = Object.freeze({
   IGNORE: 'IGNORE',
-  BOUNCE: 'BOUNCE',
+  PHYSIC: 'PHYSIC',
+  OVERLAP: 'OVERLAP',
 });
 
+
+export const EngineCollisionChannel = Object.freeze({
+  DEFAULT: "ENGINE_DEFAULT",
+});
 
 
 export const TraceMode = Object.freeze({
@@ -18,6 +27,7 @@ export const TraceMode = Object.freeze({
   PASS: 'PASS',
   BLOCK: 'BLOCK',
 });
+
 
 
 export class Collision {
@@ -28,16 +38,35 @@ export class Collision {
     /** @type {Actor} */
     this.attachment = null;
 
+
     this.traceResponse = {default: TraceMode.IGNORE};
 
-    this.restitution = 0.4;
+    /** @type {string} */
+    this.collisionChannel = EngineCollisionChannel.DEFAULT;
+
+    /** @type {Array<Collision>} */
+    this.overlaps = [];
+
+    /** @type {Array<Collision>} */
+    this.collisionIgnore = null;
+
+
+    /**@type {(Mover, Collision) => void} */
+    this.onHitHandler = null;
+
+    /**@type {(Actor, Collision) => void} */
+    this.onBeginOverlapHandler = null;
+
+    /**@type {(Actor, Collision) => void} */
+    this.onEndOverlapHandler = null;
   }
+
 
   get TraceMode() {
     return TraceMode;
   }
 
-  
+
   get position() {
     if(this.attachment) 
       return this.attachment.position;
@@ -62,13 +91,43 @@ export class Collision {
   pointHit(point) {
     return false;
   }
+
+
+  /**
+   * 
+   * @param {Collision} collision 
+   */
+  onHit(collision, hit) {
+    if(this.onHitHandler)
+      this.onHitHandler(collision.attachment, collision, hit)
+  }
+
+
+  /**
+   * 
+   * @param {Collision} collision 
+   */
+  onBeginOverlap(collision, hit) {
+    if(this.onBeginOverlapHandler)
+      this.onBeginOverlapHandler(collision.attachment, collision, hit);
+  }
+
+
+  /**
+   * 
+   * @param {Collision} collision 
+   */
+  onEndOverlap(collision, hit) {
+    if(this.onEndOverlapHandler)
+      this.onEndOverlapHandler(collision.attachment, collision, hit)
+  }
 }
 
 
 
 export class Circle extends Collision {
   /**
-   * 
+   *
    * @param {number} radius 
    */
   constructor(radius) {

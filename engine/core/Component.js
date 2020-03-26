@@ -11,6 +11,8 @@ export default class Component extends Context {
         
         /** @type {Actor} */
         this.actor = null;
+
+        this.hasBegun = false;
     }
 
 
@@ -37,6 +39,11 @@ export default class Component extends Context {
      */
     init(context) {}
 
+
+    /**
+     * 
+     */
+    begin() {}
 
     /**
      * 

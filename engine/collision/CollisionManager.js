@@ -1,7 +1,11 @@
 import { Vector } from 'p5';
 import Pool from '../core/Pool'
 import Mover from '../core/Mover'
-import {TraceMode, Collision, CollisionResponse, Circle} from './index'
+import {TraceMode, Collision, CollisionResponse, Circle, EngineCollisionChannel} from './Collision'
+import * as Physics from './Physics'
+import * as Mutuals from './Mutuals'
+import {pairs, doublePairs} from './utils'
+
 
 
 export default class CollisionManager 
@@ -9,6 +13,11 @@ export default class CollisionManager
   constructor(pool) {
     /** @type {Pool} */
     this.pool = pool;
+
+    this.collisionResponses = [];
+    this.collisions = {};
+
+    this.createCollisionChannel(EngineCollisionChannel.DEFAULT, null);
   }
 
 
@@ -22,69 +31,100 @@ export default class CollisionManager
 
   /**
    * 
+   * @param {string} id 
+   * @returns {boolean}
+   */
+  collisonChannelExists(id) {
+    return !(this.collisions[id] === undefined);
+  }
+
+
+  /**
+   *
+   * @param {hit: {id: string, selfResponse: string}} param0 
+   */
+  createCollisionChannel(id, selfResponse) {
+    if(!this.collisonChannelExists(id)) {
+      this.collisions[id] = [];
+      this.configureCollisionResponse(id, id, selfResponse || null);
+    }
+  }
+
+
+  /**
+   * 
+   * @param {string} idA 
+   * @param {string} idB 
+   * @param {string} response 
+   */
+  configureCollisionResponse(idA, idB, response = null) {
+    if(response && response !== CollisionResponse.IGNORE) {
+      const pair = [idA, idB].sort();
+
+      if(!this.collisonChannelExists(idA))
+        this.createCollisionChannel(idA, null);
+      
+      if(!this.collisonChannelExists(idB))
+        this.createCollisionChannel(idB, null);
+
+      this.collisionResponses.push({pair, response});
+    }
+  }
+
+
+  /**
+   * 
    * @param {Collision} a 
    * @param {Collision} b 
    */
   getCollisionResponse(a, b) {
-    //TODO
-    return CollisionResponse.BOUNCE;
+    const [idA, idB] = [a, b].sort();
+    
+    return this.collisionResponses
+      .find(( {pair} ) => idA === pair[0] && idB === pair[1])
+      || CollisionResponse.IGNORE;
   }
 
 
   /**
    * 
-   * @param {Mover} mover 
-   * @param {Vector} hit 
+   * @param {Collision} c 
    */
-  boundResolver(mover, {normal, penetration}) {
-    const normVelocity = Vector.dot(normal, mover.velocity);
-    if (normVelocity > 0) return;
+  addCollision(c) {
+    if(!c instanceof Collision) return;
 
-    const e = 1;
+    const channel = c.collisionChannel;
 
-    const impulse = Vector.mult(normal, -(1 + e) * normVelocity * mover.mass)
-    mover.applyImpulse(impulse);
+    if(channel) {
+      if(!this.collisonChannelExists(channel)) {
+        console.error(`Channel ${channel} is not registered`);
+        return;
+      }
 
-    const p = 0.5;
-
-    let correction = Vector.mult(normal, p * penetration);
-    mover.position.add(correction);
+      this.collisions[channel].push(c);
+    }
   }
-
 
 
   /**
    * 
-   * @param {Mover} a 
-   * @param {Mover} b 
-   * @param {} param2 
+   * @param {Collision} c 
    */
-  resolver(a, b, {normal, penetration}) {
-    const abv = Vector.sub(b.velocity, a.velocity);
-    const normVelocity = Vector.dot(normal, abv);
+  removeCollision(c) {
+    if(!c instanceof Collision) {
+      console.error(c, "is not a collision");
+      return;
+    }
 
-    if(normVelocity > 0) return;
+    const cList = this.collisions[c.collisionChannel];
+    const removeIndex = cList.findIndex(item => item === c);
 
-    const e = Math.min(a.collision.restitution, b.collision.restitution);
+    if(removeIndex < 0) {
+      console.error(c, "is not a regestered collision");
+      return;
+    }
 
-    const impulse = Vector.mult(normal, -(1 + e) * normVelocity / (a.invMass + b.invMass));
-
-    const before = (a.velocity.magSq() + b.velocity.magSq()).toFixed(0)
-    
-    a.applyImpulse(Vector.mult(impulse, -a.invMass));
-    b.applyImpulse(Vector.mult(impulse, b.invMass));
-
-    const after = (a.velocity.magSq() + b.velocity.magSq()).toFixed(0)
-    console.log({delta: after - before });
-
-    const p = penetration > 3 ? 0.8 : 0.3;
-    
-    const correction = Vector.mult(normal, p * penetration / (a.invMass + b.invMass));
-    a.position.add(Vector.mult(correction, -a.invMass));
-    b.position.add(Vector.mult(correction, b.invMass));
-
-    console.log(correction);
-    
+    cList.splice(removeIndex, 1);
   }
 
 
@@ -95,28 +135,107 @@ export default class CollisionManager
     this.pool.actors.forEach(a => {
       if(!a.collision || !a instanceof Mover) return;
 
-      a.collision.checkOutOfBounds(this.context, hit => this.boundResolver(a, hit));
+      if(a.physics.boundsCheck)
+        a.collision.checkOutOfBounds(this.context, hit => Physics.resolveBoundCollision(a, hit));
     })
   }
 
 
+  /**
+   * 
+   */
   resolveCollisions() {
-    const array = this.pool.actors.filter(a => a instanceof Mover);
-    
-    for(let i = 0; i < array.length - 1; i++) {
-      for(let j = i + 1; j < array.length; j++) {
-        const a = array[i];
-        const b = array[j];
-        //console.log({a, b});
-        
-        const hit = circleVScircle(a, b);
+    //const array = this.pool.actors.filter(a => a.collision);
+    //pairs(array, (a, b) => this.resolvePair(a.collision, b.collision));
+
+    this.collisionResponses.forEach(({pair, response}) => {
+      const [channelA, channelB] = pair;
+
+      if(channelA === channelB) {
+        pairs(
+          this.collisions[channelA],
+          (a, b) => this.resolvePair(a, b, response),
+        );
+      }
+      else {
+        doublePairs(
+          this.collisions[channelA],
+          this.collisions[channelB],
+          (a, b) => this.resolvePair(a, b, response),
+        );
+      }
+    });
+  }
+
+
+  /**
+   * 
+   * @param {Collision} a 
+   * @param {Collision} b 
+   */
+  resolvePair(a, b, response) {
+    // should ingore?
+    if(a.collisionIgnore && a.collisionIgnore.includes(b)) return;
+    if(b.collisionIgnore && b.collisionIgnore.includes(a)) return;
+
+    const hit = this.staticCollision(a, b);
+    //const response = this.getCollisionResponse(a, b);
+  
+    switch(response) {
+      case CollisionResponse.PHYSIC: {
+        if(hit) {
+          if(!a.attachment instanceof Mover || !b.attachment instanceof Mover) return;
+
+          Physics.resolveCollision(a.attachment, b.attachment, hit);
+
+          a.onHit(b, hit);
+          b.onHit(a, hit);
+        }
+        break;
+      }
+
+      case CollisionResponse.OVERLAP: {
+        const alreadyOverlap = a.overlaps.includes(b);
 
         if(hit) {
-          this.resolver(a, b, hit);
+          if(!alreadyOverlap) {
+            a.overlaps.push(b);
+            b.overlaps.push(a);
+
+            a.onBeginOverlap(b, hit);
+            b.onBeginOverlap(a, hit);            
+          }
         }
+        else {
+          if(alreadyOverlap) {
+            const removeA = a.overlaps.findIndex(i => i === b);
+            a.overlaps.splice(removeA);
+
+            const removeB = b.overlaps.findIndex(i => i === a);
+            b.overlaps.splice(removeB);
+
+            a.onEndOverlap(b, hit);
+            b.onEndOverlap(a, hit);
+          }
+        }
+        break;
       }
     }
   }
+
+
+
+  /**
+   * 
+   * @param {Collision} a 
+   * @param {Collision} b 
+   */
+  staticCollision(a, b) {
+    // TODO
+
+    return Mutuals.circleVScircle(a, b);
+  }
+
 
 
   /**
@@ -128,46 +247,31 @@ export default class CollisionManager
     const res = [];
     let done = false;
 
-    this.pool.actors.forEach(a => {
-      if(!a.collision || done) return;
+    this.forEachCollision(c => {
+      if(done) return;
 
       if(traceChannel) {
-        const response = 
-          a.collision.traceResponse[traceChannel] || a.collision.traceResponse.default;
+        const response = c.traceResponse[traceChannel] || c.traceResponse.default;
 
         if(response === TraceMode.BLOCK) done = true;
         if(response === TraceMode.IGNORE || response == null) return;
       }
 
-      const hit = a.collision.pointHit(point);
-      if(hit) res.push({actor: a, hit});
+      const hit = c.pointHit(point);
+      if(hit) res.push({actor: c.attachment, collision: c, hit});
     })
 
     return res;
   }
-}
 
 
-
-
-/**
- * 
- * @param {Circle} a 
- * @param {Circle} b 
- */
-function circleVScircle(a, b) {
-  const ab = Vector.sub(b.position, a.position);
-  const d2 = ab.magSq();
-
-  const r = a.radius + b.radius;
-  const r2 = r * r;
-
-  if(d2 > r2) return false;
-
-  const d = Math.sqrt(d2);
-
-  const normal = Vector.div(ab, d);
-  const penetration = r - d;
-
-  return {normal, penetration};
+  /**
+   * 
+   * @param {(c: Collision) => void} action 
+   */
+  forEachCollision(action) {
+    Object.entries(this.collisions).forEach(([channel, list]) => 
+      list.forEach(c => action(c))
+    )
+  }
 }

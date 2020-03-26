@@ -23,6 +23,8 @@ export default class Pool extends Context
         
         /** @type {Array<Actor>} */
         this.actors = [];
+
+        this.actorRequireBegin = false;
         
         /** @type {Array<Timer>} */
         this.timers = [];
@@ -46,6 +48,8 @@ export default class Pool extends Context
     initProp(prop) {
         prop.context = this.context;
         prop.pool = this;
+        
+        prop.build();
 
         return prop;
     }
@@ -71,13 +75,32 @@ export default class Pool extends Context
      * @returns {Actor}
      */
     spawnActor(actor, position) {
+        this.actorRequireBegin = true;
+
         this.initProp(actor);
         actor.position = position;
 
         this.actors.push(actor);
-        actor.begin();
+        //actor.begin();
 
         return actor;
+    }
+
+
+    /**
+     * 
+     * @param {Actor} actor 
+     */
+    removeActor(actor) {
+        const removeIndex = this.actors.findIndex(a => a === actor);
+
+        if(removeIndex < 0) {
+            console.error(actor, "is not an actor");
+            return;
+        }
+
+        this.actors.splice(removeIndex, 1);
+        actor.onDestroy();
     }
 
 
@@ -98,7 +121,19 @@ export default class Pool extends Context
 
         this.controller.begin();
 
-        this.actors.forEach(a => a.begin());
+        this.beginAllActors();
+    }
+
+
+    beginAllActors() {
+        this.actors.forEach(a => {
+            if(!a.hasBegun) {
+                a.hasBegun = true;
+                a.begin();
+            }
+        });
+
+        this.actorRequireBegin = false;
     }
 
 
@@ -117,6 +152,9 @@ export default class Pool extends Context
     tick() {
         this.updateDelta();
 
+        if(this.actorRequireBegin)
+            this.beginAllActors();
+
         // controller tick
         this.controller.tick(this.delta, this.context);
         
@@ -128,16 +166,24 @@ export default class Pool extends Context
 
 
         if(this.mouseClick) {
+            //console.time('trace');
             const res = this.collisionManager.verticalTrace(this.mouseClick, 'mouse');
+            //console.timeEnd('trace');
             if(res) console.log(res);
         }
 
         this.mouseClick = null;
         
 
+        // console.time('collision');
         this.collisionManager.resolveCollisionBounds();
         this.collisionManager.resolveCollisions();
+        // console.timeEnd('collision')
         
-        this.actors.forEach(a => a.postTick(this.delta, this.context))
+        this.actors.forEach(a => {
+            a.postTick(this.delta, this.context);
+
+            if(a.destroyed) this.removeActor(a);
+        })
     }
 }

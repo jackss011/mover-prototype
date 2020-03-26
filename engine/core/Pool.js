@@ -24,7 +24,7 @@ export default class Pool extends Context
         /** @type {Array<Actor>} */
         this.actors = [];
 
-        this.actorRequireBegin = false;
+        this.hasBegun = false;
         
         /** @type {Array<Timer>} */
         this.timers = [];
@@ -75,13 +75,12 @@ export default class Pool extends Context
      * @returns {Actor}
      */
     spawnActor(actor, position) {
-        this.actorRequireBegin = true;
-
         this.initProp(actor);
         actor.position = position;
 
         this.actors.push(actor);
-        //actor.begin();
+        if(this.hasBegun)
+            actor.begin();
 
         return actor;
     }
@@ -95,7 +94,7 @@ export default class Pool extends Context
         const removeIndex = this.actors.findIndex(a => a === actor);
 
         if(removeIndex < 0) {
-            console.error(actor, "is not an actor");
+            console.error(actor, "is not in the pool");
             return;
         }
 
@@ -121,11 +120,11 @@ export default class Pool extends Context
 
         this.controller.begin();
 
-        this.beginAllActors();
+        this.beginActorsOnStart();
     }
 
 
-    beginAllActors() {
+    beginActorsOnStart() {
         this.actors.forEach(a => {
             if(!a.hasBegun) {
                 a.hasBegun = true;
@@ -133,7 +132,7 @@ export default class Pool extends Context
             }
         });
 
-        this.actorRequireBegin = false;
+        this.hasBegun = true;
     }
 
 
@@ -151,9 +150,6 @@ export default class Pool extends Context
      */
     tick() {
         this.updateDelta();
-
-        if(this.actorRequireBegin)
-            this.beginAllActors();
 
         // controller tick
         this.controller.tick(this.delta, this.context);

@@ -36,7 +36,7 @@ export class Controller extends Prop {
  * @param {Controller} controller 
  */
 export function createCanvas(x, y, controller) {
-    const canvas = new p5(/** @param {p5} context*/ context => {
+    const sketch = new p5(/** @param {p5} context*/ context => {
         const pool = new Pool(context, controller);
 
         const sw = new StopwatchLog('tick', 100);
@@ -58,7 +58,7 @@ export function createCanvas(x, y, controller) {
         }
     });
 
-    return canvas;
+    return sketch;
 } 
 
 

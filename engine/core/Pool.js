@@ -17,8 +17,18 @@ export default class Pool extends Context
     constructor(context, controller) {
         super();
         
-        
         this.context = context;
+        this.controller = controller;
+        
+        context.mouseClicked = () => {
+           this.mouseClick = this.mouseToWorld(context.mouseX, context.mouseY);
+        }
+
+        this.init();
+    }
+
+
+    init() {
         this.delta = 0;
         
         /** @type {Array<Actor>} */
@@ -30,14 +40,9 @@ export default class Pool extends Context
         this.timers = [];
         
         /** @type {Controller} */
-        this.spawnController(controller || new Controller());
+        this.spawnController(this.controller || new Controller());
 
         this.collisionManager = new CollisionManager(this);
-
-
-        context.mouseClicked = () => {
-           this.mouseClick = this.mouseToWorld(context.mouseX, context.mouseY);
-        }
     }
 
 
@@ -116,14 +121,17 @@ export default class Pool extends Context
      * 
      */
     begin() {
-        this.context.canvas.style.cursor = "none";
-
         this.controller.begin();
 
         this.beginActorsOnStart();
+
+        this.context.canvas.style.cursor = "none";
     }
 
 
+    /**
+     * 
+     */
     beginActorsOnStart() {
         this.actors.forEach(a => {
             if(!a.hasBegun) {
@@ -181,5 +189,15 @@ export default class Pool extends Context
 
             if(a.destroyed) this.removeActor(a);
         })
+    }
+
+
+    /**
+     * 
+     */
+    resetPool() {
+        this.init();
+
+        this.begin();
     }
 }

@@ -22,6 +22,12 @@ export class CollisionComponent extends Component {
     super.init();
     
     this.collider.attachment = this.actor;
+  }
+
+
+  begin() {
+    super.begin();
+    
     this.actor.registerCollision(this.collider);
   }
 

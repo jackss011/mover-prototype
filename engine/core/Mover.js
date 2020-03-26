@@ -45,8 +45,8 @@ export default class Mover extends Actor
     }
 
 
-    build() {
-        super.build();
+    begin() {
+        super.begin();
 
         this.registerCollision(this.collision);
     }
@@ -61,7 +61,7 @@ export default class Mover extends Actor
 
         if(this.linearDamping > 0) {
             const basicallyStill = this.velocity.magSq() < 1e-4;
-            
+
             const damping = !basicallyStill || !(delta > 0 && this.invMass > 0)
                 ? Vector.mult(this.velocity, -1 * this.linearDamping * delta)
                 : Vector.mult(this.velocity, -1 * (1 / delta) * (1 / this.invMass));

@@ -37,9 +37,8 @@ export default class Ball extends Mover {
         this.shape = this.addComponent(new Round(this.radius));
 
         /** @type {CollisionComponent} */
-        this.mouseSelection = this.addComponent(new CollisionComponent(new Circle(this.radius * 2)));
-
-        this.mouseSelection.collider.traceResponse.mouse = TraceMode.PASS;
+        this.mouseSelectable = this.addComponent(new CollisionComponent(new Circle(this.radius * 4)));
+        this.mouseSelectable.collider.traceResponse.mouse = TraceMode.PASS;
     }
 
 

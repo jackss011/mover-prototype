@@ -57,6 +57,7 @@ class TestController extends Engine.Controller {
 
         this.collisionConfig = {responses}
     }
+    
 
     begin() {
         super.begin();

@@ -17,27 +17,32 @@ export default class Pool extends Context
     constructor(context, controller) {
         super();
         
-        
         this.context = context;
+        this.controller = controller;
+        
+        context.mouseClicked = () => {
+           this.mouseClick = this.mouseToWorld(context.mouseX, context.mouseY);
+        }
+
+        this.init();
+    }
+
+
+    init() {
         this.delta = 0;
         
         /** @type {Array<Actor>} */
         this.actors = [];
 
-        this.actorRequireBegin = false;
+        this.hasBegun = false;
         
         /** @type {Array<Timer>} */
         this.timers = [];
         
         /** @type {Controller} */
-        this.spawnController(controller || new Controller());
+        this.spawnController(this.controller || new Controller());
 
         this.collisionManager = new CollisionManager(this);
-
-
-        context.mouseClicked = () => {
-           this.mouseClick = this.mouseToWorld(context.mouseX, context.mouseY);
-        }
     }
 
 
@@ -75,13 +80,12 @@ export default class Pool extends Context
      * @returns {Actor}
      */
     spawnActor(actor, position) {
-        this.actorRequireBegin = true;
-
         this.initProp(actor);
         actor.position = position;
 
         this.actors.push(actor);
-        //actor.begin();
+        if(this.hasBegun)
+            actor.begin();
 
         return actor;
     }
@@ -95,7 +99,7 @@ export default class Pool extends Context
         const removeIndex = this.actors.findIndex(a => a === actor);
 
         if(removeIndex < 0) {
-            console.error(actor, "is not an actor");
+            console.error(actor, "is not in the pool");
             return;
         }
 
@@ -117,15 +121,18 @@ export default class Pool extends Context
      * 
      */
     begin() {
-        this.context.canvas.style.cursor = "none";
-
         this.controller.begin();
 
-        this.beginAllActors();
+        this.beginActorsOnStart();
+
+        this.context.canvas.style.cursor = "none";
     }
 
 
-    beginAllActors() {
+    /**
+     * 
+     */
+    beginActorsOnStart() {
         this.actors.forEach(a => {
             if(!a.hasBegun) {
                 a.hasBegun = true;
@@ -133,7 +140,7 @@ export default class Pool extends Context
             }
         });
 
-        this.actorRequireBegin = false;
+        this.hasBegun = true;
     }
 
 
@@ -151,9 +158,6 @@ export default class Pool extends Context
      */
     tick() {
         this.updateDelta();
-
-        if(this.actorRequireBegin)
-            this.beginAllActors();
 
         // controller tick
         this.controller.tick(this.delta, this.context);
@@ -185,5 +189,15 @@ export default class Pool extends Context
 
             if(a.destroyed) this.removeActor(a);
         })
+    }
+
+
+    /**
+     * 
+     */
+    resetPool() {
+        this.init();
+
+        this.begin();
     }
 }

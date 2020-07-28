@@ -61,6 +61,13 @@ class TestController extends Engine.Controller {
 
     begin() {
         super.begin();
+
+        var button = document. createElement("button");
+
+        var body = document. getElementsByTagName("body")[0];
+        body.appendChild(button)
+        button.innerHTML = "Reset"
+        button.onclick = () => this.pool.resetPool();
         
         const follower = this.pool.spawnActor(new Follower(), new Vector(500, 200));
         follower.mass = 1;

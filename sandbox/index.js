@@ -1,10 +1,10 @@
 import p5, { Vector } from 'p5'
 
-import * as Engine from './engine'
-import Ball from './engine/examples/Ball'
-import Target from './engine/examples/Target'
-import { grid2D } from './engine/utils/flow';
-import { CollisionResponse } from './engine/collision/Collision';
+import * as Engine from '#'
+import Ball from '#/examples/Ball'
+import Target from '#/examples/Target'
+import { grid2D } from '#/utils/flow';
+import { CollisionResponse } from '#/collision/Collision';
 
 
 
